@@ -3,7 +3,7 @@
 // and copy, so the tool is relevant to the exact search ("metal building snow
 // load", "flat roof snow load", "carport snow load"…). One source of truth.
 import type { FaqItem } from "./faq";
-import type { Surface, Thermal } from "./snow";
+import type { RoofShape, Surface, Thermal } from "./snow";
 
 export interface RoofType {
   slug: string;
@@ -14,7 +14,7 @@ export interface RoofType {
   meta: string;
   intro: string;
   // Defaults that make the calculator land on a relevant starting point.
-  defaults: { slopeDeg?: number; thermal?: Thermal; surface?: Surface };
+  defaults: { slopeDeg?: number; thermal?: Thermal; surface?: Surface; shape?: RoofShape };
   focus: string; // one-line "what's different about this roof type"
   notes: string[];
   faqs: FaqItem[];
@@ -29,7 +29,7 @@ export const ROOF_TYPES: RoofType[] = [
     volume: "260/mo",
     meta: "Free flat roof snow load calculator. Get the ASCE 7-22 flat-roof load Pf, the minimum load and the rain-on-snow surcharge for a low-slope roof.",
     intro: "Flat and low-slope roofs carry the full flat-roof load Pf with no slope reduction, and they are the case where the §7.3.4 minimum load and the §7.10 rain-on-snow surcharge most often govern.",
-    defaults: { slopeDeg: 0, thermal: "heated", surface: "nonslippery" },
+    defaults: { slopeDeg: 0, thermal: "heated", surface: "nonslippery", shape: "flat" },
     focus: "Cs = 1.0 (no slope shedding); watch the minimum load and rain-on-snow surcharge.",
     notes: [
       "On a flat roof the sloped load equals the flat-roof load Pf, so exposure, thermal and importance factors drive the answer.",
@@ -48,7 +48,7 @@ export const ROOF_TYPES: RoofType[] = [
     volume: "210/mo",
     meta: "Free pitched roof snow load calculator. Apply the ASCE 7-22 slope factor Cs to get the sloped balanced load on a gable or hip roof, and see when to check unbalanced snow.",
     intro: "Pitched roofs shed snow, so the slope factor Cs reduces the load as the pitch steepens. Steep, slippery roofs shed the most — but gable roofs must also be checked for the unbalanced (drifted-leeward) load case.",
-    defaults: { slopeDeg: 27, thermal: "heated", surface: "nonslippery" },
+    defaults: { slopeDeg: 27, thermal: "heated", surface: "nonslippery", shape: "gable" },
     focus: "Slope factor Cs reduces the load; gable roofs also need the unbalanced case (§7.6.1).",
     notes: [
       "A common 6:12 pitch is about 26.6°. On a warm, non-slippery roof the slope factor only starts reducing the load above 30°.",
@@ -67,7 +67,7 @@ export const ROOF_TYPES: RoofType[] = [
     volume: "210/mo",
     meta: "Free metal building snow load calculator. Standing-seam and metal roofs are slippery surfaces in ASCE 7, so the slope factor sheds snow sooner — see your design load.",
     intro: "Steel buildings and standing-seam metal roofs are 'unobstructed slippery surfaces' in ASCE 7, so the slope factor Cs reduces the load at a lower slope than shingles. Unheated metal buildings also use a higher thermal factor Ct.",
-    defaults: { slopeDeg: 14, thermal: "unheated", surface: "slippery" },
+    defaults: { slopeDeg: 14, thermal: "unheated", surface: "slippery", shape: "gable" },
     focus: "Slippery surface → Cs sheds sooner; unheated buildings use Ct = 1.2.",
     notes: [
       "A slippery metal roof on a warm building starts shedding (Cs < 1) at just 5°; an unheated metal building (Ct = 1.2) starts at 15°.",
@@ -86,7 +86,7 @@ export const ROOF_TYPES: RoofType[] = [
     volume: "140/mo",
     meta: "Free carport and patio cover snow load calculator. Open, unheated structures use ASCE 7 Ct = 1.2 — find the design snow load before you buy a kit.",
     intro: "Carports, patio covers and open shelters are unheated, open-air structures, so they use the higher thermal factor Ct = 1.2 — the snow on them does not get any help melting from below.",
-    defaults: { slopeDeg: 5, thermal: "unheated", surface: "slippery" },
+    defaults: { slopeDeg: 5, thermal: "unheated", surface: "slippery", shape: "monoslope" },
     focus: "Open / unheated → Ct = 1.2; check the kit's rated load against this number.",
     notes: [
       "Many big-box carport and patio-cover kits are rated for a fixed snow load (often 10–30 psf). Compare that to your calculated design load before buying.",
@@ -105,7 +105,7 @@ export const ROOF_TYPES: RoofType[] = [
     volume: "90/mo",
     meta: "Free shed roof / monoslope snow load calculator using ASCE 7-22. Get the balanced design load for a single-slope roof on a shed, barn or addition.",
     intro: "A shed or monoslope roof has one continuous slope, so the slope factor Cs applies straight to the flat-roof load. Single-slope roofs can also collect a windward drift along the high wall.",
-    defaults: { slopeDeg: 10, thermal: "unheated", surface: "nonslippery" },
+    defaults: { slopeDeg: 10, thermal: "unheated", surface: "nonslippery", shape: "monoslope" },
     focus: "Single slope → one Cs; check windward drift at the high side.",
     notes: [
       "Sheds are usually unheated (Ct = 1.2), so they carry more snow than a heated house of the same slope.",
@@ -124,7 +124,7 @@ export const ROOF_TYPES: RoofType[] = [
     volume: "40/mo",
     meta: "Free gambrel / barn roof snow load calculator. The shallow upper slope governs the balanced load and collects unbalanced snow — see the ASCE 7 numbers.",
     intro: "A gambrel (barn) roof has a steep lower slope and a shallow upper slope. The shallow upper slope carries the most snow, so use it for the balanced load, and check the unbalanced case where snow drifts over the ridge.",
-    defaults: { slopeDeg: 20, thermal: "unheated", surface: "nonslippery" },
+    defaults: { slopeDeg: 20, thermal: "unheated", surface: "nonslippery", shape: "gable" },
     focus: "Use the shallow upper slope for the balanced load; check unbalanced snow.",
     notes: [
       "Enter the upper (shallow) slope — it is the one that holds snow. The steep lower slope sheds and is rarely the governing balanced case.",
@@ -143,7 +143,7 @@ export const ROOF_TYPES: RoofType[] = [
     volume: "70/mo",
     meta: "Free greenhouse snow load calculator. A continuously heated greenhouse uses ASCE 7 Ct = 0.85 — find the design load on polycarbonate or glass glazing.",
     intro: "A continuously heated greenhouse melts snow from below, so ASCE 7 allows a reduced thermal factor Ct = 0.85 — but only if heat is maintained. Unheated hoop houses and cold frames do not get the reduction.",
-    defaults: { slopeDeg: 25, thermal: "greenhouse", surface: "slippery" },
+    defaults: { slopeDeg: 25, thermal: "greenhouse", surface: "slippery", shape: "gable" },
     focus: "Heated glazing → Ct = 0.85; an unheated hoop house does NOT get the reduction.",
     notes: [
       "Ct = 0.85 only applies to a greenhouse kept continuously warm with low-R glazing. If the heat can fail, design it as a normal heated (Ct = 1.0) structure.",
@@ -162,7 +162,7 @@ export const ROOF_TYPES: RoofType[] = [
     volume: "110/mo",
     meta: "Convert ground snow load to roof snow load with the ASCE 7-22 formula. Enter Pg and the roof's exposure, warmth and slope to get Pf and the sloped load Ps.",
     intro: "Roof snow load is the ground snow load converted for your specific roof: Pf = 0.7 × Ce × Ct × Is × Pg, then × Cs for slope. Enter your ground snow load below and adjust the factors to see exactly how the roof value is derived.",
-    defaults: { slopeDeg: 18, thermal: "heated", surface: "nonslippery" },
+    defaults: { slopeDeg: 18, thermal: "heated", surface: "nonslippery", shape: "gable" },
     focus: "Shows the full Pg → Pf → Ps conversion with every factor exposed.",
     notes: [
       "The 0.7 base factor already assumes some snow blows or melts off; the exposure, thermal and importance factors fine-tune it.",

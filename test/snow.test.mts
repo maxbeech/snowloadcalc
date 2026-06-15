@@ -13,7 +13,7 @@ function near(name: string, got: number, want: number, tol = 0.05) {
 
 const flat = (o: Partial<SnowInputs> = {}): SnowInputs => ({
   pg: 30, risk: "II", terrain: "C", roofExposure: "partial", thermal: "heated",
-  surface: "nonslippery", slopeDeg: 0, width: 40, area: 0, ...o,
+  surface: "nonslippery", shape: "flat", slopeDeg: 0, width: 40, area: 0, ...o,
 });
 
 // --- Textbook flat-roof case: Pf = 0.7·1·1·1·30 = 21 psf ---

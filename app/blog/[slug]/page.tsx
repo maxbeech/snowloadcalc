@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { POSTS, getPost } from "@/lib/posts";
 import { SITE } from "@/lib/site";
+
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));
@@ -27,10 +30,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
   return (
     <article className="mx-auto max-w-2xl">
-      <nav className="mb-4 text-sm text-slate-500">
-        <Link href="/blog" className="hover:text-slate-900">Guides</Link>
-        <span className="mx-1.5">/</span><span className="text-slate-700">{p.title}</span>
-      </nav>
+      <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Guides", href: "/blog" }, { name: p.title, href: `/blog/${p.slug}` }]} />
 
       <h1 className="text-3xl font-bold tracking-tight text-slate-900">{p.title}</h1>
       <p className="mt-2 text-slate-600">{p.description}</p>
@@ -52,6 +52,24 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <p className="mt-1 text-sm text-slate-600">Get your design roof snow load in seconds with the free ASCE 7-22 calculator.</p>
         <Link href="/" className="mt-2 inline-block rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700">Open the calculator →</Link>
       </div>
+
+      <section className="mt-8">
+        <h2 className="text-sm font-semibold text-slate-900">Related</h2>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {[
+            { name: "Snow load by roof type", href: "/calculators" },
+            { name: "Ground snow load by state", href: "/states" },
+            { name: "Snow drift calculator", href: "/drift" },
+            { name: "How it works", href: "/methodology" },
+            { name: "More guides", href: "/blog" },
+          ].map((l) => (
+            <Link key={l.href} href={l.href}
+              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:border-sky-300 hover:text-slate-900">
+              {l.name}
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "Article",

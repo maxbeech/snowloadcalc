@@ -4,7 +4,7 @@
 // hand-edited or stale URL (or a link carrying only ?utm_source) can never
 // produce NaN or an out-of-range input.
 import {
-  DEFAULT_SNOW, type RiskCategory, type RoofExposure, type SnowInputs,
+  DEFAULT_SNOW, type RiskCategory, type RoofExposure, type RoofShape, type SnowInputs,
   type Surface, type Terrain, type Thermal,
 } from "./snow";
 
@@ -13,6 +13,7 @@ const TERRAIN: Terrain[] = ["B", "C", "D", "aboveTreeline"];
 const EXPOSURE: RoofExposure[] = ["fully", "partial", "sheltered"];
 const THERMAL: Thermal[] = ["heated", "slightlyHeated", "unheated", "freezer", "greenhouse"];
 const SURFACE: Surface[] = ["slippery", "nonslippery"];
+const SHAPE: RoofShape[] = ["flat", "monoslope", "gable", "hip"];
 
 function clampNum(v: string | null, min: number, max: number, fallback: number): number {
   // Absent/blank param -> fallback (default), NOT 0: a link carrying only
@@ -30,8 +31,8 @@ function pick<T extends string>(v: string | null, allowed: T[], fallback: T): T 
 export function encodeInputs(inp: SnowInputs): string {
   const p = new URLSearchParams({
     pg: String(inp.pg), r: inp.risk, te: inp.terrain, ex: inp.roofExposure,
-    th: inp.thermal, su: inp.surface, sl: String(inp.slopeDeg), w: String(inp.width),
-    ar: String(inp.area ?? 0),
+    th: inp.thermal, su: inp.surface, sh: inp.shape, sl: String(inp.slopeDeg),
+    w: String(inp.width), ar: String(inp.area ?? 0),
   });
   return p.toString();
 }
@@ -47,6 +48,7 @@ export function decodeInputs(search: string, fallback: Partial<SnowInputs> = {})
     roofExposure: pick(p.get("ex"), EXPOSURE, base.roofExposure),
     thermal: pick(p.get("th"), THERMAL, base.thermal),
     surface: pick(p.get("su"), SURFACE, base.surface),
+    shape: pick(p.get("sh"), SHAPE, base.shape),
     slopeDeg: clampNum(p.get("sl"), 0, 70, base.slopeDeg),
     width: clampNum(p.get("w"), 5, 500, base.width),
     area: clampNum(p.get("ar"), 0, 1000000, base.area ?? 0),

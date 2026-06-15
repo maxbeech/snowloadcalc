@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 function Header() {
   return (
-    <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
+    <header className="border-b border-slate-200 bg-white/80 backdrop-blur print:hidden">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
         <Link href="/" className="flex items-center gap-2 font-bold text-slate-900">
           <span className="grid h-7 w-7 place-items-center rounded-lg bg-sky-600 text-sm text-white">❄</span>
@@ -35,7 +35,7 @@ function Header() {
 function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="mt-16 border-t border-slate-200 bg-slate-50">
+    <footer className="mt-16 border-t border-slate-200 bg-slate-50 print:hidden">
       <div className="mx-auto max-w-5xl px-5 py-8 text-sm text-slate-500">
         <div className="flex flex-wrap gap-x-6 gap-y-2">
           <Link href="/" className="hover:text-slate-900">Snow load calculator</Link>

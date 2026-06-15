@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Calculator from "@/components/Calculator";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { STATE_SNOW, getStateSnow, snowBand } from "@/lib/ground-snow";
+import { ROOF_TYPES } from "@/lib/roof-types";
+
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return STATE_SNOW.map((s) => ({ slug: s.slug }));
@@ -26,10 +30,7 @@ export default async function StatePage({ params }: { params: Promise<{ slug: st
 
   return (
     <div>
-      <nav className="mb-4 text-sm text-slate-500">
-        <Link href="/states" className="hover:text-slate-900">By state</Link>
-        <span className="mx-1.5">/</span><span className="text-slate-700">{s.name}</span>
-      </nav>
+      <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "By state", href: "/states" }, { name: s.name, href: `/states/${s.slug}` }]} />
 
       <h1 className="text-3xl font-bold tracking-tight text-slate-900">{s.name} Roof Snow Load Calculator</h1>
       <p className="mt-2 max-w-2xl text-slate-600">
@@ -62,7 +63,19 @@ export default async function StatePage({ params }: { params: Promise<{ slug: st
       </section>
 
       <section className="mt-8">
-        <h2 className="text-sm font-semibold text-slate-900">Nearby states</h2>
+        <h2 className="text-sm font-semibold text-slate-900">Calculate by roof type</h2>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {ROOF_TYPES.map((rt) => (
+            <Link key={rt.slug} href={`/calculators/${rt.slug}`}
+              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:border-sky-300 hover:text-slate-900">
+              {rt.name}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-sm font-semibold text-slate-900">Other states</h2>
         <div className="mt-2 flex flex-wrap gap-2">
           {STATE_SNOW.filter((x) => x.slug !== s.slug).slice(0, 12).map((x) => (
             <Link key={x.slug} href={`/states/${x.slug}`}

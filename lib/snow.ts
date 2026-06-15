@@ -15,6 +15,7 @@ export type Terrain = "B" | "C" | "D" | "aboveTreeline";
 export type RoofExposure = "fully" | "partial" | "sheltered";
 export type Thermal = "heated" | "slightlyHeated" | "unheated" | "freezer" | "greenhouse";
 export type Surface = "slippery" | "nonslippery";
+export type RoofShape = "flat" | "monoslope" | "gable" | "hip";
 
 export interface SnowInputs {
   pg: number; // ground snow load, psf (site input)
@@ -23,9 +24,20 @@ export interface SnowInputs {
   roofExposure: RoofExposure;
   thermal: Thermal; // -> Ct (thermal factor)
   surface: Surface; // slippery (metal/membrane) vs not — for Cs
+  shape: RoofShape; // roof geometry — drives the §7.6.1 unbalanced case
   slopeDeg: number; // roof slope from horizontal, degrees (0–70)
-  width: number; // eave-to-ridge horizontal distance W, ft (for rain-on-snow)
+  width: number; // eave-to-ridge horizontal distance W, ft (rain-on-snow + unbalanced)
   area?: number; // optional roof plan area, sq ft (for total-weight estimate)
+}
+
+// Convert a roof pitch ("x-in-12") to slope degrees, and the reverse, so users
+// can think in either. Single source of truth for the pitch helper UI.
+export function pitchToDeg(rise: number): number {
+  return Math.round(Math.atan(rise / 12) * (180 / Math.PI) * 10) / 10;
+}
+export function degToPitch(deg: number): string {
+  const rise = Math.round(Math.tan((deg * Math.PI) / 180) * 12 * 10) / 10;
+  return `${rise}:12`;
 }
 
 // Importance factor Is for snow loads — ASCE 7-22 Table 1.5-2.
@@ -130,8 +142,9 @@ export const DEFAULT_SNOW: SnowInputs = {
   roofExposure: "partial",
   thermal: "heated",
   surface: "nonslippery",
-  slopeDeg: 0,
-  width: 40,
+  shape: "gable",
+  slopeDeg: 18.4, // ≈ a common 4:12 pitch — the most representative residential roof
+  width: 30,
   area: 1500,
 };
 
@@ -148,6 +161,7 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 // Plain-English guidance from the numbers. Pure + deterministic (unit-tested).
 export function interpretSnow(inp: SnowInputs, r: SnowResult): SnowInterpretation {
   const steep = inp.slopeDeg >= 15;
+  const gableLike = inp.shape === "gable" || inp.shape === "hip";
   return {
     headline: `Design roof snow load ≈ ${r.design} psf` + (r.pg === 0 ? " (no ground snow — verify locally)" : ""),
     designText:
@@ -164,9 +178,9 @@ export function interpretSnow(inp: SnowInputs, r: SnowResult): SnowInterpretatio
           : `The balanced load of ${r.balanced} psf governs (it exceeds the ${r.pm} psf minimum).`,
     notes: [
       `Estimated snow density ≈ ${r.density} pcf, so ${r.design} psf is roughly ${r.depth} in of settled snow.`,
-      steep
-        ? "Steeper roofs shed snow (Cs < 1), but check unbalanced and sliding-snow load cases too — they can govern on gable and stepped roofs."
-        : "On gable roofs also check the unbalanced load case (§7.6.1); at roof steps, parapets and against walls check drift loads (§7.7) with the drift calculator.",
+      gableLike
+        ? "The §7.6.1 unbalanced (leeward-drift) case is computed above for this gable/hip roof; at roof steps, parapets and walls also check drift loads (§7.7) with the drift calculator, plus sliding snow (§7.9) onto anything below."
+        : "At roof steps, parapets and against walls check drift loads (§7.7) with the drift calculator, and check sliding snow (§7.9) where this roof sheds onto a lower roof, walk or equipment.",
       "Ground snow load Pg is set by your local building department / the ASCE 7 Hazard Tool — always confirm the value for your exact site before you build or submit.",
     ],
     nextSteps: [

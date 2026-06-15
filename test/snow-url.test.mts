@@ -11,7 +11,7 @@ function check(name: string, cond: boolean, detail = "") {
 
 const sample: SnowInputs = {
   pg: 42, risk: "III", terrain: "D", roofExposure: "fully", thermal: "unheated",
-  surface: "slippery", slopeDeg: 33.5, width: 60, area: 2400,
+  surface: "slippery", shape: "gable", slopeDeg: 33.5, width: 60, area: 2400,
 };
 
 // Round-trip
@@ -21,6 +21,7 @@ check("risk round-trips", decoded.risk === sample.risk);
 check("terrain round-trips", decoded.terrain === sample.terrain);
 check("thermal round-trips", decoded.thermal === sample.thermal);
 check("surface round-trips", decoded.surface === sample.surface);
+check("shape round-trips", decoded.shape === sample.shape);
 check("slope round-trips", decoded.slopeDeg === sample.slopeDeg, `${decoded.slopeDeg}`);
 check("width round-trips", decoded.width === sample.width);
 check("area round-trips", decoded.area === sample.area);

@@ -15,8 +15,10 @@ export default function Home() {
         </h1>
         <p className="mt-2 max-w-2xl text-slate-600">
           Compute the design roof snow load using the ASCE 7-22 method. Enter your ground snow load,
-          roof slope, exposure and thermal condition — get the flat, sloped, minimum and governing
-          design load in psf, with every factor shown. Free, no sign-up.
+          roof shape, slope, exposure and thermal condition — get the flat, sloped, minimum, governing
+          and gable <strong>unbalanced</strong> (§7.6.1) loads in psf, with every factor shown. A
+          separate <a href="/drift" className="text-sky-700 hover:underline">drift calculator</a> covers
+          roof steps. Free, no sign-up.
         </p>
       </section>
 

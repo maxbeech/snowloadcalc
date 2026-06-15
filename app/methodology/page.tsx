@@ -29,6 +29,8 @@ export default function Methodology() {
           <div className="mt-1">Minimum load &nbsp;&nbsp; Pm = Is · min(Pg, 20) &nbsp;&nbsp;(§7.3.4, slope &lt; 15°)</div>
           <div className="mt-1">Rain-on-snow &nbsp;&nbsp; +5 psf when 0 &lt; Pg ≤ 20 and slope &lt; W/50 &nbsp;(§7.10)</div>
           <div className="mt-1">Snow density &nbsp;&nbsp; γ = 0.13 · Pg + 14 ≤ 30 pcf &nbsp;&nbsp;(Eq. 7.7-1)</div>
+          <div className="mt-1">Drift height &nbsp;&nbsp; hd = 0.43 · L^⅓ · (Pg+10)^¼ − 1.5 &nbsp;(Eq. 7.7-1, §7.7)</div>
+          <div className="mt-1">Unbalanced &nbsp;&nbsp;&nbsp; gable/hip: leeward Ps + hd·γ/√S surcharge &nbsp;(§7.6.1)</div>
         </div>
       </section>
 
@@ -92,14 +94,16 @@ export default function Methodology() {
       </section>
 
       <section className="mt-8 text-sm text-slate-700">
-        <h2 className="text-lg font-bold text-slate-900">What this tool does not do</h2>
+        <h2 className="text-lg font-bold text-slate-900">What this tool covers — and what it doesn&apos;t</h2>
         <p className="mt-2">
-          SnowLoadCalc computes the <strong>balanced</strong> roof snow load plus the minimum and
-          rain-on-snow cases, and a separate §7.7 drift surcharge. It does not, by itself, resolve the
-          full <strong>unbalanced</strong> (§7.6) or <strong>sliding</strong> (§7.9) load cases or partial
-          loading — these can govern on gable, stepped and multi-level roofs and must be checked by a
-          qualified engineer for a permit submittal. Always confirm the governing ground snow load and
-          have the design reviewed by a licensed professional.
+          SnowLoadCalc computes the <strong>balanced</strong> roof snow load, the §7.3.4 minimum and the
+          §7.10 rain-on-snow case; the <strong>§7.6.1 unbalanced</strong> case for hip and gable roofs;
+          and, on the drift page, the <strong>§7.7 drift</strong> surcharge at roof steps. It does
+          <strong> not</strong> yet resolve <strong>sliding-snow</strong> (§7.9), <strong>partial</strong>
+          loading (§7.5), the <strong>monoslope/sawtooth unbalanced</strong> cases (§7.6.2–7.6.3), or
+          curved roofs — these can govern on specific geometries and must be checked by a qualified
+          engineer for a permit submittal. Always confirm the governing ground snow load and have the
+          design reviewed by a licensed professional.
         </p>
       </section>
     </div>

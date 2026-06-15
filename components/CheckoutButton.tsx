@@ -2,12 +2,25 @@
 
 import { useState } from "react";
 
-// Starts a Stripe Checkout session via /api/checkout. The route degrades
-// gracefully: if Stripe isn't configured (no env keys) it returns a clear
-// "not yet available" message instead of a broken redirect.
-export default function CheckoutButton({ className }: { className?: string }) {
+// Pro checkout. The pricing page (a Server Component) passes `enabled`, computed
+// from whether the Stripe env vars are configured at build time. When Stripe is
+// NOT wired yet we render an honest "early access" affordance instead of a
+// misleading "$29" purchase button that would dead-end in a "coming soon" toast.
+export default function CheckoutButton({ enabled = false, className }: { enabled?: boolean; className?: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!enabled) {
+    return (
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
+        <p className="font-medium text-slate-700">Pro reports are launching shortly.</p>
+        <a href="mailto:hello@snowloadcalc.com?subject=SnowLoadCalc%20Pro%20early%20access"
+          className="mt-1 inline-block font-semibold text-sky-700 hover:underline">
+          Email us for early access →
+        </a>
+      </div>
+    );
+  }
 
   async function go() {
     setLoading(true); setError(null);

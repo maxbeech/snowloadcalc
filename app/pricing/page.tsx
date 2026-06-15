@@ -22,6 +22,10 @@ const PRO = [
   "Drift and sliding-load checklist for your reviewer",
 ];
 
+// Read at build time: when Stripe isn't wired the Pro card shows an honest
+// "early access" affordance instead of a dead-end "$29" button.
+const PRO_ENABLED = Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PRICE_ID);
+
 export default function Pricing() {
   return (
     <div>
@@ -50,7 +54,7 @@ export default function Pricing() {
               <li key={f} className="flex gap-2"><span className="text-sky-600">✓</span>{f}</li>
             ))}
           </ul>
-          <div className="mt-5"><CheckoutButton /></div>
+          <div className="mt-5"><CheckoutButton enabled={PRO_ENABLED} /></div>
           <p className="mt-3 text-xs text-slate-400">
             A SnowLoadCalc report is a calculation aid, not a stamped engineering document. For a permit,
             have a licensed engineer review it and confirm the unbalanced, drift and sliding cases.

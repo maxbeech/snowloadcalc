@@ -1,13 +1,30 @@
 import Link from "next/link";
+import Contours from "./Contours";
 
 // Shared visual primitives. Every page composes from these so the system stays
 // coherent (one eyebrow, one pill, one app-frame, one button) and on-brand.
 
-// Small uppercase kicker that sits above a section heading.
-export function Eyebrow({ children }: { children: React.ReactNode }) {
+// The standard landing-page header band: a faint contour wash behind an eyebrow,
+// display title and lead-in, tying every inner page to the homepage's language.
+export function PageHeader({ eyebrow, title, children, width = "max-w-6xl" }:
+  { eyebrow: string; title: React.ReactNode; children?: React.ReactNode; width?: string }) {
   return (
-    <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-frost-700">
-      <span className="h-px w-6 bg-frost-400" />
+    <div className="relative overflow-hidden border-b border-ink-100 bg-white">
+      <Contours className="opacity-70" />
+      <div className={`relative mx-auto ${width} px-5 pb-10 pt-12`}>
+        <Eyebrow>{eyebrow}</Eyebrow>
+        <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-[2.5rem]">{title}</h1>
+        {children && <div className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">{children}</div>}
+      </div>
+    </div>
+  );
+}
+
+// Small uppercase kicker that sits above a section heading.
+export function Eyebrow({ children, tone = "light" }: { children: React.ReactNode; tone?: "light" | "dark" }) {
+  return (
+    <span className={`inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] ${tone === "dark" ? "text-frost-300" : "text-frost-700"}`}>
+      <span className={`h-px w-6 ${tone === "dark" ? "bg-frost-400/70" : "bg-frost-400"}`} />
       {children}
     </span>
   );

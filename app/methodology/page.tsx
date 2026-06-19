@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CE, CT, IS } from "@/lib/snow";
-import { Eyebrow } from "@/components/ui";
+import { PageHeader } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Methodology: How SnowLoadCalc Computes Snow Load",
@@ -24,16 +24,14 @@ const EQUATIONS = [
 
 export default function Methodology() {
   return (
-    <div className="mx-auto max-w-4xl px-5 py-12">
-      <Eyebrow>Reference</Eyebrow>
-      <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Methodology</h1>
-      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+    <div>
+      <PageHeader eyebrow="Reference" title="Methodology" width="max-w-4xl">
         SnowLoadCalc implements the snow load procedure of <strong className="text-ink-700">ASCE/SEI 7-22,
         Chapter 7</strong> (Minimum Design Loads and Associated Criteria for Buildings and Other Structures).
         Every factor below is exactly the value the calculator uses. This page is the single source of truth.
-      </p>
-
-      <section className="mt-9">
+      </PageHeader>
+      <div className="mx-auto max-w-4xl px-5 py-12">
+      <section>
         <h2 className="font-display text-lg font-bold text-ink-900">The equations</h2>
         <div className="mt-3 overflow-hidden rounded-2xl border border-ink-100 bg-white">
           <table className="w-full text-sm">
@@ -123,6 +121,7 @@ export default function Methodology() {
           Always confirm the governing ground snow load and have the design reviewed by a licensed professional.
         </p>
       </section>
+      </div>
     </div>
   );
 }

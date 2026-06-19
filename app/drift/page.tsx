@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import DriftCalculator from "@/components/DriftCalculator";
 import Faq from "@/components/Faq";
-import { Eyebrow } from "@/components/ui";
+import { PageHeader } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Snow Drift Load Calculator (ASCE 7-22 §7.7)",
@@ -17,18 +17,16 @@ const FAQS = [
 
 export default function DriftPage() {
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10">
-      <Eyebrow>§7.7 drift</Eyebrow>
-      <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Snow drift load calculator</h1>
-      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+    <div>
+      <PageHeader eyebrow="§7.7 drift" title="Snow drift load calculator">
         Size the snow drift surcharge at a roof step using the ASCE 7-22 §7.7 method. Enter the ground snow
         load, the lower roof&apos;s balanced load (from the main calculator), the step height and the two roof
         lengths to get the leeward and windward drift heights and the peak load at the step.
-      </p>
-
-      <div className="mt-8"><DriftCalculator /></div>
-
-      <Faq items={FAQS} />
+      </PageHeader>
+      <div className="mx-auto max-w-6xl px-5 py-12">
+        <DriftCalculator />
+        <Faq items={FAQS} />
+      </div>
     </div>
   );
 }

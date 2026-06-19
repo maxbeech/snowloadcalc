@@ -9,8 +9,8 @@ import { diagramGeometry, VIEW } from "@/lib/diagram";
 // load, dimension lines and a mono readout. When the §7.6.1 leeward drift
 // governs, a toggle reveals the drifted profile. Used in the hero, the results
 // panel and (statically) as marketing mockups.
-export default function RoofDiagram({ inp, r, interactive = true, className = "" }:
-  { inp: SnowInputs; r: SnowResult; interactive?: boolean; className?: string }) {
+export default function RoofDiagram({ inp, r, interactive = true, drawIn = false, className = "" }:
+  { inp: SnowInputs; r: SnowResult; interactive?: boolean; drawIn?: boolean; className?: string }) {
   const g = useMemo(() => diagramGeometry(inp, r), [inp, r]);
   const [mode, setMode] = useState<"balanced" | "drift">("balanced");
   const showDrift = g.drifted !== null && mode === "drift";
@@ -23,19 +23,23 @@ export default function RoofDiagram({ inp, r, interactive = true, className = ""
   const hatch = Array.from({ length: 17 }, (_, i) => g.ground.x1 + 8 + i * 20);
 
   return (
-    <figure className={`relative overflow-hidden rounded-2xl border border-ink-100 bg-gradient-to-b from-ink-50/70 to-white ${className}`}>
+    <figure className={`relative overflow-hidden rounded-2xl border border-ink-100 bg-gradient-to-b from-ink-50/70 to-white shadow-[0_24px_50px_-28px_rgba(10,22,34,0.45)] ${className}`}>
       <div className="bg-blueprint absolute inset-0 opacity-60" aria-hidden />
       <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} className="relative w-full" role="img"
         aria-label={`Roof section: design snow load ${r.design} psf on a ${inp.slopeDeg} degree ${inp.shape} roof`}>
         <defs>
           <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#ffffff" />
-            <stop offset="1" stopColor="#cef7fb" />
+            <stop offset="0.55" stopColor="#d6f6fa" />
+            <stop offset="1" stopColor="#9fe8f1" />
           </linearGradient>
           <linearGradient id="drift" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#f9e6c6" />
-            <stop offset="1" stopColor="#f0c06a" />
+            <stop offset="0" stopColor="#fbeccb" />
+            <stop offset="1" stopColor="#ecb24f" />
           </linearGradient>
+          <filter id="snowShade" x="-20%" y="-20%" width="140%" height="160%">
+            <feDropShadow dx="0" dy="2.5" stdDeviation="2.2" floodColor="#0a1622" floodOpacity="0.28" />
+          </filter>
         </defs>
 
         {/* Ground datum + hatch */}
@@ -46,13 +50,13 @@ export default function RoofDiagram({ inp, r, interactive = true, className = ""
 
         {/* Roof body */}
         <path d={g.silhouette} className="fill-ink-700" />
-        <path d={g.silhouette} className="fill-none stroke-ink-900" strokeWidth="1.5" strokeLinejoin="round" />
+        <path d={g.silhouette} className={`fill-none stroke-ink-900 ${drawIn ? "roof-draw" : ""}`} strokeWidth="1.5" strokeLinejoin="round" />
 
         {/* Snow: balanced blanket, or the drifted profile when toggled */}
-        <g key={`${g.thickness}-${mode}`} className="animate-settle" style={{ transformOrigin: `${mid.x}px ${g.ground.y}px` }}>
+        <g key={`${g.thickness}-${mode}`} className="animate-settle" style={{ transformOrigin: `${mid.x}px ${g.ground.y}px` }} filter="url(#snowShade)">
           <path d={showDrift && g.drifted ? g.drifted : g.balanced}
             fill={showDrift ? "url(#drift)" : "url(#snow)"}
-            className={showDrift ? "stroke-load-500" : "stroke-frost-300"} strokeWidth="1.25" strokeLinejoin="round" />
+            className={showDrift ? "stroke-load-500" : "stroke-frost-400"} strokeWidth="1.5" strokeLinejoin="round" />
         </g>
 
         {/* Wind direction arrow when showing the drift case */}

@@ -28,11 +28,16 @@ Live: https://snowloadcalc.vercel.app
 
 ## Design
 
-The interface is a single, intentional "Glaciometric" system: an arctic-ink and
-glacier-frost palette with a warm amber reserved for load and drift meaning, a
-Space Grotesk / Inter / JetBrains Mono type stack, a faint blueprint texture, and a
-roof-section drawing as the recurring motif. Tokens live in `app/globals.css`; the
-shared primitives in `components/ui.tsx` and `components/Brand.tsx` keep it coherent.
+The interface is a single, intentional "Glaciometric" system built around one idea:
+a precision instrument for the weight of winter. An arctic-ink and glacier-frost
+palette (with a warm amber reserved for load and drift meaning), a Space Grotesk /
+Inter / JetBrains Mono type stack, and two recurring motifs: a **topographic contour
+field** (`components/Contours.tsx`, echoing ASCE ground-snow maps) and the **roof-section
+drawing** itself. The homepage hero is a dark instrument console housing the live
+diagram; inner pages share a contour-washed header band (`PageHeader`). A small,
+dependency-free motion layer (`components/motion.tsx`: scroll reveals, count-ups, the
+diagram drawing itself in) is fully gated behind `prefers-reduced-motion`. Tokens live
+in `app/globals.css`; shared primitives in `components/ui.tsx` and `components/Brand.tsx`.
 
 ## Stack
 

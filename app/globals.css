@@ -124,8 +124,43 @@ body {
   to { transform: scaleY(1); opacity: 1; }
 }
 
+/* The contour backdrop breathes very slowly, giving the page quiet life. */
+@keyframes contour-breathe {
+  0%, 100% { transform: scale(1) translateY(0); opacity: 0.85; }
+  50% { transform: scale(1.05) translateY(-1%); opacity: 1; }
+}
+
+/* A roof line that draws itself in on load (dasharray sweep). */
+@keyframes draw-in {
+  from { stroke-dashoffset: var(--draw-len, 600); }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Scroll-reveal. Content is visible by default (no-JS + reduced motion are safe);
+   only when motion is allowed do we hide-then-reveal via the data-shown flag. */
+.reveal { opacity: 1; }
 @media (prefers-reduced-motion: no-preference) {
   .animate-settle { animation: settle 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .contour-drift { animation: contour-breathe 26s ease-in-out infinite; }
+  .roof-draw { stroke-dasharray: var(--draw-len, 820); animation: draw-in 1.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
+  .reveal {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal[data-shown="false"] {
+    opacity: 0;
+    transform: translateY(var(--reveal-y, 18px));
+  }
+}
+
+/* Measurement-ruler motif: a column of fine ticks, the instrument's edge. */
+.tick-rule {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    currentColor 0,
+    currentColor 1px,
+    transparent 1px,
+    transparent 9px
+  );
 }
 
 /* ── Print / Save-as-PDF — clean instrument sheet, no chrome ─────────────── */

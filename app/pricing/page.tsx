@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import CheckoutButton from "@/components/CheckoutButton";
-import { Eyebrow } from "@/components/ui";
+import { PageHeader } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Pro: Permit-Ready Snow Load Report",
@@ -33,15 +33,12 @@ function Check() {
 
 export default function Pricing() {
   return (
-    <div className="mx-auto max-w-5xl px-5 py-12">
-      <Eyebrow>Pricing</Eyebrow>
-      <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Simple, honest pricing</h1>
-      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+    <div>
+      <PageHeader eyebrow="Pricing" title="Simple, honest pricing" width="max-w-5xl">
         The calculator is free forever. When you need to hand a clean, defensible snow load calculation to a
         plan reviewer or a client, the Pro report packages it as a PDF.
-      </p>
-
-      <div className="mt-9 grid gap-4 md:grid-cols-2">
+      </PageHeader>
+      <div className="mx-auto grid max-w-5xl gap-4 px-5 py-12 md:grid-cols-2">
         <div className="rounded-3xl border border-ink-100 bg-white p-7">
           <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">Free</div>
           <div className="tabular mt-2 font-display text-4xl font-bold text-ink-900">$0</div>

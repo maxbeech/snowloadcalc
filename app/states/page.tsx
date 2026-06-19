@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { STATE_SNOW, snowBand, REGIONS, regionOf } from "@/lib/ground-snow";
-import { Eyebrow } from "@/components/ui";
+import { PageHeader } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Ground Snow Load by State",
@@ -11,18 +11,14 @@ export const metadata: Metadata = {
 
 export default function StatesIndex() {
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12">
-      <Eyebrow>By state</Eyebrow>
-      <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
-        Ground snow load by state
-      </h1>
-      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+    <div>
+      <PageHeader eyebrow="By state" title="Ground snow load by state">
         Planning ranges for the populated parts of each state, read from the ASCE 7 ground snow load map.
         Mountainous states are marked <span className="font-semibold text-load-700">case study</span>, where
         elevation sets the value and a site-specific lookup is required. The number that governs a permit is
         the one your building department or the ASCE 7 Hazard Tool gives for your address.
-      </p>
-      <div className="mt-8 space-y-8">
+      </PageHeader>
+      <div className="mx-auto max-w-6xl space-y-8 px-5 py-12">
         {REGIONS.map((region) => (
           <div key={region}>
             <div className="mb-2 flex items-center gap-3">
@@ -36,7 +32,7 @@ export default function StatesIndex() {
                 </thead>
                 <tbody className="divide-y divide-ink-50">
                   {STATE_SNOW.filter((s) => regionOf(s.abbr) === region).map((s) => (
-                    <tr key={s.slug} className="transition hover:bg-frost-50/60">
+                    <tr key={s.slug} className="bg-white transition odd:bg-ink-50/30 hover:bg-frost-50/70">
                       <td className="px-4 py-2.5">
                         <Link href={`/states/${s.slug}`} className="font-medium text-frost-700 hover:underline">{s.name}</Link>
                         {s.caseStudy && <span className="ml-2 rounded bg-load-50 px-1.5 py-0.5 text-[10px] font-semibold text-load-700">case study</span>}

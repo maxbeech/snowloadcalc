@@ -20,9 +20,9 @@ export default function CalculatorsIndex() {
         <div className="grid gap-3 sm:grid-cols-2">
           {ROOF_TYPES.map((r) => (
             <Link key={r.slug} href={`/calculators/${r.slug}`}
-              className="group rounded-2xl border border-ink-100 bg-white p-5 transition hover:-translate-y-0.5 hover:border-frost-300 hover:shadow-lg">
+              className="group border border-ink-200 bg-paper p-5 transition hover:border-frost-500 hover:bg-frost-50">
               <div className="flex items-center justify-between gap-3">
-                <div className="font-display text-base font-semibold text-ink-900 group-hover:text-frost-700">{r.name}</div>
+                <div className="font-display text-lg font-semibold text-ink-900 group-hover:text-frost-700">{r.name}</div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0 stroke-ink-300 transition group-hover:translate-x-0.5 group-hover:stroke-frost-500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
               </div>
               <p className="mt-1.5 text-sm leading-relaxed text-ink-500">{r.focus}</p>

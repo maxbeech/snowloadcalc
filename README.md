@@ -28,16 +28,18 @@ Live: https://snowloadcalc.vercel.app
 
 ## Design
 
-The interface is a single, intentional "Glaciometric" system built around one idea:
-a precision instrument for the weight of winter. An arctic-ink and glacier-frost
-palette (with a warm amber reserved for load and drift meaning), a Space Grotesk /
-Inter / JetBrains Mono type stack, and two recurring motifs: a **topographic contour
-field** (`components/Contours.tsx`, echoing ASCE ground-snow maps) and the **roof-section
-drawing** itself. The homepage hero is a dark instrument console housing the live
-diagram; inner pages share a contour-washed header band (`PageHeader`). A small,
-dependency-free motion layer (`components/motion.tsx`: scroll reveals, count-ups, the
-diagram drawing itself in) is fully gated behind `prefers-reduced-motion`. Tokens live
-in `app/globals.css`; shared primitives in `components/ui.tsx` and `components/Brand.tsx`.
+The site is set as a published engineering monograph: warm ivory paper, warm ink, a
+serif display face (Fraunces) over Inter and JetBrains Mono, hairline rules, numbered
+sections (§01…) and figures (Fig. 1, Plate I), drop caps and a colophon. One cold accent
+(a deep petrol "marine") carries links, figure numbers and the snow data; one warm accent
+(brick) is reserved for load and drift warnings. Two recurring motifs: a **topographic
+contour field** (`components/Contours.tsx`, echoing ASCE ground-snow maps) and the
+**roof-section drawing**, set as a cool figure-plate on the warm page. The header is a
+masthead; inner pages share a contour-washed `PageHeader`. A small, dependency-free motion
+layer (`components/motion.tsx`: scroll reveals, count-ups, the diagram drawing itself in)
+is fully gated behind `prefers-reduced-motion`. Tokens live in `app/globals.css`; shared
+primitives in `components/ui.tsx` and `components/Brand.tsx`, so the whole tree re-skins
+from one place.
 
 ## Stack
 

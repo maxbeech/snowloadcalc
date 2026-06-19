@@ -9,7 +9,7 @@ import { decodeInputs, encodeInputs } from "@/lib/snow-url";
 import CalcResults from "./CalcResults";
 
 const selectCls =
-  "mt-1 w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 transition focus-visible:border-frost-400 focus-visible:ring-2 focus-visible:ring-frost-200 focus:outline-none";
+  "mt-1 w-full border border-ink-300 bg-paper px-3 py-2 text-sm text-ink-900 transition focus-visible:border-frost-500 focus-visible:ring-1 focus-visible:ring-frost-500 focus:outline-none";
 // Selects add the painted chevron; number inputs reuse the base only.
 const selectControl = `${selectCls} select-control`;
 
@@ -78,16 +78,16 @@ export default function Calculator({ seed }: { seed?: Partial<SnowInputs> }) {
   return (
     <div>
       <div role="status" aria-live="polite" aria-atomic="true"
-        className="sticky top-[57px] z-20 mb-3 flex items-center justify-between rounded-xl border border-ink-100 bg-white/95 px-4 py-2 shadow-sm backdrop-blur md:hidden print:hidden">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-400">Design snow load</span>
-        <span className="tabular font-display text-lg font-bold text-frost-600">{r.design}<span className="text-xs font-medium text-ink-300"> psf</span></span>
+        className="sticky top-[64px] z-20 mb-3 flex items-center justify-between border border-ink-300 bg-paper/95 px-4 py-2 backdrop-blur md:hidden print:hidden">
+        <span className="label text-ink-400">Design snow load</span>
+        <span className="tabular font-display text-lg font-semibold text-frost-600">{r.design}<span className="text-xs font-medium text-ink-400"> psf</span></span>
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">
-        <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-sm ring-machined">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-sm font-semibold text-ink-900">Your roof</h2>
-            <span className="rounded-full border border-frost-200 bg-frost-50 px-2 py-0.5 text-[10px] font-semibold text-frost-700">ASCE 7-22</span>
+        <div className="border border-ink-300 bg-paper p-5">
+          <div className="flex items-center justify-between border-b border-ink-200 pb-3">
+            <h2 className="label text-ink-500">The worksheet</h2>
+            <span className="border border-ink-300 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-500">ASCE 7-22</span>
           </div>
           <div className="mt-4 space-y-3.5">
             <Field label="Ground snow load, Pg (psf)" hint="From the ASCE 7 Hazard Tool or your building department. The per-state pages give a planning range.">

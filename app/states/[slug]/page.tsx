@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-const linkCls = "rounded-lg border border-ink-100 bg-white px-3 py-1.5 text-sm text-ink-500 transition hover:border-frost-300 hover:text-ink-900";
+const linkCls = "border border-ink-200 bg-paper px-3 py-1.5 text-sm text-ink-500 transition hover:border-frost-500 hover:text-ink-900";
 
 export default async function StatePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -31,10 +31,10 @@ export default async function StatePage({ params }: { params: Promise<{ slug: st
   if (!s) notFound();
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10">
+    <div className="mx-auto max-w-6xl px-6 py-10">
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "By state", href: "/states" }, { name: s.name, href: `/states/${s.slug}` }]} />
 
-      <h1 className="font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">{s.name} Roof Snow Load Calculator</h1>
+      <h1 className="font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-[2.6rem]">{s.name} Roof Snow Load Calculator</h1>
       <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">
         Ground snow load across the populated parts of {s.name} runs roughly{" "}
         <strong className="text-ink-700">{s.lowPg} to {s.highPg} psf</strong> ({snowBand(s.typicalPg)}). The
@@ -43,17 +43,17 @@ export default async function StatePage({ params }: { params: Promise<{ slug: st
       </p>
 
       {s.caseStudy ? (
-        <div className="mt-4 rounded-xl border border-load-300/60 bg-load-50 p-4 text-sm text-ink-700">
+        <div className="mt-4 border-l-2 border-load-500 bg-load-50 p-4 text-sm text-ink-700">
           <strong className="text-load-700">Case-study state.</strong> {s.note}
         </div>
       ) : (
-        <div className="mt-4 rounded-xl border border-frost-200 bg-frost-50 p-4 text-sm text-ink-700">{s.note}</div>
+        <div className="mt-4 border-l-2 border-frost-500 bg-frost-50 p-4 text-sm text-ink-700">{s.note}</div>
       )}
 
       <div className="mt-8"><Calculator seed={{ pg: s.typicalPg }} /></div>
 
-      <section className="mt-10 rounded-2xl border border-ink-100 bg-white p-6 text-sm leading-relaxed text-ink-600">
-        <h2 className="font-display text-lg font-bold text-ink-900">Finding your exact {s.name} ground snow load</h2>
+      <section className="mt-10 border border-ink-200 bg-paper p-6 text-sm leading-relaxed text-ink-600">
+        <h2 className="font-display text-lg font-semibold text-ink-900">Finding your exact {s.name} ground snow load</h2>
         <p className="mt-2">
           The number above is a planning value, not a permit value. For {s.name}, get your site&apos;s design
           ground snow load from the <a href="https://ascehazardtool.org" target="_blank" rel="noopener noreferrer" className="font-medium text-frost-700 hover:underline">ASCE 7 Hazard Tool</a> or

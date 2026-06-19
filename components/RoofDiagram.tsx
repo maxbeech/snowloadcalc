@@ -23,22 +23,22 @@ export default function RoofDiagram({ inp, r, interactive = true, drawIn = false
   const hatch = Array.from({ length: 17 }, (_, i) => g.ground.x1 + 8 + i * 20);
 
   return (
-    <figure className={`relative overflow-hidden rounded-2xl border border-ink-100 bg-gradient-to-b from-ink-50/70 to-white shadow-[0_24px_50px_-28px_rgba(10,22,34,0.45)] ${className}`}>
-      <div className="bg-blueprint absolute inset-0 opacity-60" aria-hidden />
+    <figure className={`relative overflow-hidden border border-ink-300 bg-gradient-to-b from-frost-50/70 to-paper ${className}`}>
+      <div className="bg-grid absolute inset-0 opacity-70" aria-hidden />
       <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} className="relative w-full" role="img"
         aria-label={`Roof section: design snow load ${r.design} psf on a ${inp.slopeDeg} degree ${inp.shape} roof`}>
         <defs>
           <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#ffffff" />
-            <stop offset="0.55" stopColor="#d6f6fa" />
-            <stop offset="1" stopColor="#9fe8f1" />
+            <stop offset="0.55" stopColor="#eaf0f1" />
+            <stop offset="1" stopColor="#c9d8db" />
           </linearGradient>
           <linearGradient id="drift" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fbeccb" />
-            <stop offset="1" stopColor="#ecb24f" />
+            <stop offset="0" stopColor="#ecd1c2" />
+            <stop offset="1" stopColor="#cf9a7f" />
           </linearGradient>
           <filter id="snowShade" x="-20%" y="-20%" width="140%" height="160%">
-            <feDropShadow dx="0" dy="2.5" stdDeviation="2.2" floodColor="#0a1622" floodOpacity="0.28" />
+            <feDropShadow dx="0" dy="2.5" stdDeviation="2" floodColor="#1d1a12" floodOpacity="0.22" />
           </filter>
         </defs>
 
@@ -79,19 +79,19 @@ export default function RoofDiagram({ inp, r, interactive = true, drawIn = false
           </g>
         )}
 
-        {/* Readout chip */}
+        {/* Readout cartouche */}
         <g>
-          <rect x="14" y="14" width="118" height="40" rx="9" className="fill-white" stroke="#cef7fb" />
-          <text x="24" y="31" className="fill-ink-400 font-mono text-[9px] uppercase tracking-wider" style={{ letterSpacing: "0.1em" }}>Design load</text>
-          <text x="24" y="48" className="fill-frost-600 font-display text-[18px] font-bold">{r.design}<tspan className="fill-ink-300 text-[11px]"> psf</tspan></text>
+          <rect x="14" y="14" width="120" height="40" className="fill-paper stroke-ink-300" />
+          <text x="23" y="31" className="fill-ink-400 font-mono text-[9px] uppercase" style={{ letterSpacing: "0.14em" }}>Design load</text>
+          <text x="23" y="49" className="fill-frost-600 font-display text-[19px] font-semibold">{r.design}<tspan className="fill-ink-400 font-sans text-[10px]"> psf</tspan></text>
         </g>
       </svg>
 
       {interactive && g.drifted && (
-        <div className="absolute bottom-3 right-3 flex rounded-lg border border-ink-100 bg-white/90 p-0.5 text-[11px] font-semibold shadow-sm backdrop-blur">
+        <div className="absolute bottom-3 right-3 flex border border-ink-300 bg-paper/95 text-[10px] font-semibold uppercase tracking-wider backdrop-blur">
           {(["balanced", "drift"] as const).map((m) => (
             <button key={m} onClick={() => setMode(m)}
-              className={`rounded-md px-2.5 py-1 transition ${mode === m ? "bg-ink-900 text-white" : "text-ink-500 hover:text-ink-900"}`}>
+              className={`px-2.5 py-1 transition ${mode === m ? "bg-ink-900 text-paper" : "text-ink-500 hover:text-ink-900"}`}>
               {m === "balanced" ? "Balanced" : "Unbalanced"}
             </button>
           ))}

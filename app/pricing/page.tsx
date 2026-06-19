@@ -38,29 +38,29 @@ export default function Pricing() {
         The calculator is free forever. When you need to hand a clean, defensible snow load calculation to a
         plan reviewer or a client, the Pro report packages it as a PDF.
       </PageHeader>
-      <div className="mx-auto grid max-w-5xl gap-4 px-5 py-12 md:grid-cols-2">
-        <div className="rounded-3xl border border-ink-100 bg-white p-7">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">Free</div>
-          <div className="tabular mt-2 font-display text-4xl font-bold text-ink-900">$0</div>
-          <ul className="mt-5 space-y-2.5 text-sm text-ink-600">
+      <div className="mx-auto grid max-w-5xl gap-5 px-6 py-12 md:grid-cols-2">
+        <div className="border border-ink-300 bg-paper p-7">
+          <div className="label text-ink-400">The free edition</div>
+          <div className="tabular mt-2 font-display text-5xl font-semibold text-ink-900">$0</div>
+          <ul className="mt-6 space-y-3 border-t border-ink-200 pt-5 text-sm text-ink-600">
             {FREE.map((f) => <li key={f} className="flex gap-2.5"><Check />{f}</li>)}
           </ul>
         </div>
 
-        <div className="relative overflow-hidden rounded-3xl border-2 border-frost-300 bg-white p-7 shadow-[0_30px_60px_-30px_rgba(10,22,34,0.4)]">
-          <div className="frost-aurora absolute inset-0 opacity-60" aria-hidden />
-          <div className="relative">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-frost-700">Pro report</div>
-            <div className="tabular mt-2 font-display text-4xl font-bold text-ink-900">$29<span className="text-base font-medium text-ink-300"> one-time</span></div>
-            <ul className="mt-5 space-y-2.5 text-sm text-ink-600">
-              {PRO.map((f) => <li key={f} className="flex gap-2.5"><Check />{f}</li>)}
-            </ul>
-            <div className="mt-6"><CheckoutButton enabled={PRO_ENABLED} /></div>
-            <p className="mt-4 text-xs leading-relaxed text-ink-400">
-              A SnowLoadCalc report is a calculation aid, not a stamped engineering document. For a permit,
-              have a licensed engineer review it and confirm the unbalanced, drift and sliding cases.
-            </p>
+        <div className="relative border-2 border-ink-900 bg-paper p-7">
+          <div className="flex items-center justify-between">
+            <div className="label text-frost-600">The Pro offprint</div>
+            <span className="border border-ink-300 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-500">PDF</span>
           </div>
+          <div className="tabular mt-2 font-display text-5xl font-semibold text-ink-900">$29<span className="font-sans text-base font-medium text-ink-400"> one-time</span></div>
+          <ul className="mt-6 space-y-3 border-t border-ink-200 pt-5 text-sm text-ink-600">
+            {PRO.map((f) => <li key={f} className="flex gap-2.5"><Check />{f}</li>)}
+          </ul>
+          <div className="mt-6"><CheckoutButton enabled={PRO_ENABLED} /></div>
+          <p className="mt-4 text-xs leading-relaxed text-ink-400">
+            A SnowLoadCalc report is a calculation aid, not a stamped engineering document. For a permit,
+            have a licensed engineer review it and confirm the unbalanced, drift and sliding cases.
+          </p>
         </div>
       </div>
     </div>

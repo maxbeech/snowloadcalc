@@ -1,101 +1,105 @@
 import Link from "next/link";
 import Contours from "./Contours";
 
-// Shared visual primitives. Every page composes from these so the system stays
-// coherent (one eyebrow, one pill, one app-frame, one button) and on-brand.
+// Editorial primitives. Every page composes from these so the monograph stays
+// coherent: one label, one numbered section head, one figure plate, one button.
 
-// The standard landing-page header band: a faint contour wash behind an eyebrow,
-// display title and lead-in, tying every inner page to the homepage's language.
-export function PageHeader({ eyebrow, title, children, width = "max-w-6xl" }:
-  { eyebrow: string; title: React.ReactNode; children?: React.ReactNode; width?: string }) {
-  return (
-    <div className="relative overflow-hidden border-b border-ink-100 bg-white">
-      <Contours className="opacity-70" />
-      <div className={`relative mx-auto ${width} px-5 pb-10 pt-12`}>
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-[2.5rem]">{title}</h1>
-        {children && <div className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">{children}</div>}
-      </div>
-    </div>
-  );
-}
-
-// Small uppercase kicker that sits above a section heading.
+// Running label / eyebrow, set as a small-caps mono kicker with a short rule.
 export function Eyebrow({ children, tone = "light" }: { children: React.ReactNode; tone?: "light" | "dark" }) {
   return (
-    <span className={`inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] ${tone === "dark" ? "text-frost-300" : "text-frost-700"}`}>
-      <span className={`h-px w-6 ${tone === "dark" ? "bg-frost-400/70" : "bg-frost-400"}`} />
+    <span className={`inline-flex items-center gap-2.5 label ${tone === "dark" ? "text-frost-200" : "text-frost-600"}`}>
+      <span className={`h-px w-7 ${tone === "dark" ? "bg-frost-300/60" : "bg-frost-500"}`} />
       {children}
     </span>
   );
 }
 
-// Standard section header: eyebrow kicker, display title, optional lead-in.
-export function SectionHead({ eyebrow, title, sub, center }:
-  { eyebrow: string; title: React.ReactNode; sub?: React.ReactNode; center?: boolean }) {
+// Numbered section head: a section mark (§n), eyebrow, serif title, standfirst.
+export function SectionHead({ num, eyebrow, title, sub, center }:
+  { num?: string; eyebrow: string; title: React.ReactNode; sub?: React.ReactNode; center?: boolean }) {
   return (
-    <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">{title}</h2>
-      {sub && <p className="mt-3 text-[15px] leading-relaxed text-ink-500">{sub}</p>}
+    <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-3xl"}>
+      <div className={`flex items-baseline gap-3 ${center ? "justify-center" : ""}`}>
+        {num && <span className="font-mono text-sm font-medium text-frost-600">§{num}</span>}
+        <Eyebrow>{eyebrow}</Eyebrow>
+      </div>
+      <h2 className="mt-3 font-display text-3xl font-semibold leading-[1.04] tracking-tight text-ink-900 sm:text-[2.6rem]">{title}</h2>
+      {sub && <p className="mt-4 text-[15px] leading-relaxed text-ink-500">{sub}</p>}
     </div>
   );
 }
 
 export function Pill({ children, tone = "frost" }: { children: React.ReactNode; tone?: "frost" | "load" | "ink" }) {
-  const tones = {
-    frost: "border-frost-200 bg-frost-50 text-frost-700",
-    load: "border-load-300/60 bg-load-50 text-load-700",
-    ink: "border-ink-200 bg-white text-ink-600",
-  } as const;
-  return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${tones[tone]}`}>
-      {children}
-    </span>
-  );
+  const tones = { frost: "border-frost-300 text-frost-700", load: "border-load-300 text-load-700", ink: "border-ink-300 text-ink-600" } as const;
+  return <span className={`inline-flex items-center border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${tones[tone]}`}>{children}</span>;
 }
 
-// Primary / secondary call-to-action, rendered as a Link.
+// Sharp-edged editorial button rendered as a Link.
 export function CTA({ href, children, variant = "primary", className = "" }:
   { href: string; children: React.ReactNode; variant?: "primary" | "ghost"; className?: string }) {
   const styles = variant === "primary"
-    ? "bg-ink-900 text-white hover:bg-ink-800 ring-machined"
-    : "border border-ink-200 bg-white/70 text-ink-700 hover:border-frost-300 hover:text-ink-900";
+    ? "bg-ink-900 text-paper hover:bg-ink-700"
+    : "border border-ink-900 text-ink-900 hover:bg-ink-900 hover:text-paper";
   return (
-    <Link href={href} className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${styles} ${className}`}>
+    <Link href={href} className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.12em] transition ${styles} ${className}`}>
       {children}
     </Link>
   );
 }
 
-// An abstract "app window" frame for UI mockups on the marketing pages. It gives
-// people a sense of the product without shipping a stale screenshot image.
-export function MockWindow({ title = "snowloadcalc.com", children, className = "" }:
+// A figure "plate": a ruled frame with a caption strip, the way a diagram sits
+// in a printed monograph (replaces the old browser-chrome mockup).
+export function MockWindow({ title = "Plate", children, className = "" }:
   { title?: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className={`overflow-hidden rounded-2xl border border-ink-200/70 bg-white shadow-[0_30px_60px_-30px_rgba(10,22,34,0.45)] ${className}`}>
-      <div className="flex items-center gap-2 border-b border-ink-100 bg-ink-50/60 px-4 py-2.5">
-        <span className="h-2.5 w-2.5 rounded-full bg-load-300" />
-        <span className="h-2.5 w-2.5 rounded-full bg-frost-200" />
-        <span className="h-2.5 w-2.5 rounded-full bg-ink-200" />
-        <span className="ml-2 font-mono text-[11px] text-ink-400">{title}</span>
-      </div>
-      <div className="p-4 sm:p-5">{children}</div>
-    </div>
+    <figure className={`border border-ink-300 bg-paper shadow-[0_24px_50px_-30px_rgba(20,17,11,0.4)] ${className}`}>
+      <figcaption className="flex items-center justify-between border-b border-ink-200 px-3 py-1.5">
+        <span className="label text-ink-500">{title}</span>
+        <span className="label text-ink-300">SnowLoadCalc</span>
+      </figcaption>
+      <div className="p-3 sm:p-4">{children}</div>
+    </figure>
   );
 }
 
-// The big mono readout used for a governing load value (the instrument's dial).
+// A numbered figure caption, e.g. "Fig. 1, balanced roof snow load profile".
+export function FigCaption({ n, children }: { n: string; children: React.ReactNode }) {
+  return (
+    <figcaption className="mt-2 figcaption">
+      <span className="text-frost-600">Fig. {n}</span> &middot; {children}
+    </figcaption>
+  );
+}
+
+// Big readout numeral, set in the serif for editorial weight.
 export function Readout({ value, unit = "psf", label, tone = "frost", size = "xl" }:
   { value: string | number; unit?: string; label?: string; tone?: "frost" | "load" | "ink"; size?: "xl" | "lg" | "md" }) {
   const color = tone === "load" ? "text-load-600" : tone === "ink" ? "text-ink-900" : "text-frost-600";
   const sizes = { xl: "text-5xl", lg: "text-4xl", md: "text-3xl" } as const;
   return (
     <div>
-      {label && <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">{label}</div>}
-      <div className={`tabular font-display font-bold ${sizes[size]} ${color}`}>
-        {value}
-        {unit && <span className="ml-1.5 text-base font-semibold text-ink-300">{unit}</span>}
+      {label && <div className="label text-ink-400">{label}</div>}
+      <div className={`tabular font-display font-semibold ${sizes[size]} ${color}`}>
+        {value}{unit && <span className="ml-1.5 font-sans text-base font-medium text-ink-300">{unit}</span>}
+      </div>
+    </div>
+  );
+}
+
+// The standard page opener, set like a chapter title page with a faint
+// topographic plate behind a section mark, eyebrow, serif title and standfirst.
+export function PageHeader({ num, eyebrow, title, children, width = "max-w-6xl" }:
+  { num?: string; eyebrow: string; title: React.ReactNode; children?: React.ReactNode; width?: string }) {
+  return (
+    <div className="relative overflow-hidden border-b-2 border-ink-900 bg-paper">
+      <Contours className="opacity-70" />
+      <div className={`relative mx-auto ${width} px-6 pb-10 pt-10`}>
+        <div className="flex items-baseline gap-3">
+          {num && <span className="font-mono text-sm font-medium text-frost-600">{num}</span>}
+          <Eyebrow>{eyebrow}</Eyebrow>
+        </div>
+        <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.02] tracking-tight text-ink-900 sm:text-[3.25rem]">{title}</h1>
+        {children && <div className="mt-4 max-w-2xl text-[15.5px] leading-relaxed text-ink-600">{children}</div>}
       </div>
     </div>
   );

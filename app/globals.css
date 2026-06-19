@@ -1,174 +1,158 @@
 @import "tailwindcss";
 
 /* ──────────────────────────────────────────────────────────────────────────
-   SnowLoadCalc design language — "Glaciometric".
-   A precision field instrument for snow loads: cold, crisp, technical, honest.
-   One palette, one type system, one set of textures. Source of truth lives here
-   and is consumed everywhere through Tailwind utilities (bg-frost-500, font-display…).
+   SnowLoadCalc — "The Monograph".
+   The site is set like a published engineering monograph: warm paper, ink, a
+   serif display face, hairline rules, numbered figures and marginalia. One cold
+   accent (marine) for structure/links/snow data; one warm accent (brick) for
+   load and warnings. Source of truth lives here; consumed via Tailwind utilities.
+   The token families keep their old names (ink / frost / load / paper) so the
+   whole component tree re-skins from this file alone — but the VALUES are new.
    ────────────────────────────────────────────────────────────────────────── */
 
 @theme {
-  /* Ink — deep arctic navy. Primary text, dark surfaces, the wordmark. */
-  --color-ink-50: #eef2f6;
-  --color-ink-100: #d6e0e9;
-  --color-ink-200: #aebfcf;
-  --color-ink-300: #7d94a9;
-  --color-ink-400: #4f6a83;
-  --color-ink-500: #2c4a63;
-  --color-ink-600: #173347;
-  --color-ink-700: #15293b;
-  --color-ink-800: #0f1f2e;
-  --color-ink-900: #0a1622;
-  --color-ink-950: #060e17;
+  /* Paper — warm ivory page stock. */
+  --color-paper: #f7f3ea;
 
-  /* Frost — glacier teal-cyan. The signature accent (snow / data / cold). */
-  --color-frost-50: #ecfdfe;
-  --color-frost-100: #cef7fb;
-  --color-frost-200: #a3edf5;
-  --color-frost-300: #67ddeb;
-  --color-frost-400: #2cc4d8;
-  --color-frost-500: #11a7bd;
-  --color-frost-600: #1186a0;
-  --color-frost-700: #156b82;
-  --color-frost-800: #18586b;
-  --color-frost-900: #184a5b;
+  /* Ink — warm near-black down to soft greige. Body type + rules. */
+  --color-ink-50: #f0ead9;
+  --color-ink-100: #e5ddca;  /* light hairline */
+  --color-ink-200: #d1c8b1;  /* hairline rule */
+  --color-ink-300: #b0a78f;
+  --color-ink-400: #8c8369;
+  --color-ink-500: #6c6450;  /* muted text */
+  --color-ink-600: #4f4836;
+  --color-ink-700: #3a3427;  /* strong text */
+  --color-ink-800: #2a251b;
+  --color-ink-900: #1d1a12;  /* headings / ink black */
+  --color-ink-950: #14110b;
 
-  /* Load — warm structural amber. Reserved for load / drift / warning meaning. */
-  --color-load-50: #fdf6ec;
-  --color-load-100: #f9e6c6;
-  --color-load-300: #f0c06a;
-  --color-load-500: #e0992a;
-  --color-load-600: #c47d18;
-  --color-load-700: #9a5f15;
+  /* Frost — repurposed as MARINE: a deep petrol/Prussian ink. Cold accent for
+     links, figure numbers, rule flourishes and the snow data in figures. */
+  --color-frost-50: #e9eff1;
+  --color-frost-100: #cddce0;
+  --color-frost-200: #a4c0c7;
+  --color-frost-300: #6f969f;
+  --color-frost-400: #426b77;
+  --color-frost-500: #2c5462;
+  --color-frost-600: #21434f;  /* primary accent / links */
+  --color-frost-700: #193640;
+  --color-frost-800: #142a32;
+  --color-frost-900: #0f2027;
 
-  /* Paper — cool near-white page ground. */
-  --color-paper: #f4f7f9;
+  /* Load — BRICK: warm terracotta. Reserved for load / drift / warning meaning. */
+  --color-load-50: #f6ece5;
+  --color-load-100: #e9cfc2;
+  --color-load-300: #d29b80;
+  --color-load-500: #b14e2c;
+  --color-load-600: #973f22;
+  --color-load-700: #6f2e18;
 
-  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", monospace;
 }
 
-:root {
-  color-scheme: light;
-}
+:root { color-scheme: light; }
 
 body {
   background-color: var(--color-paper);
+  color: var(--color-ink-800);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-::selection {
-  background: var(--color-frost-200);
-  color: var(--color-ink-900);
+::selection { background: #d9c9a8; color: var(--color-ink-950); }
+
+.tabular {
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
-/* Selects: drop the native control and paint our own chevron so the field
-   matches the rest of the instrument (the bare appearance-none was leaving
-   selects with no affordance at all). */
+/* ── Editorial typographic devices ──────────────────────────────────────── */
+
+/* Small-caps label: the running label/eyebrow of a print page. */
+.label {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.66rem;
+  font-weight: 500;
+}
+
+/* Drop cap for a standfirst / lead paragraph. */
+.dropcap::first-letter {
+  font-family: var(--font-display);
+  float: left;
+  font-weight: 600;
+  font-size: 3.6em;
+  line-height: 0.72;
+  margin: 0.06em 0.09em 0 0;
+  color: var(--color-frost-600);
+}
+
+/* Hairline rules. */
+.rule { border-top: 1px solid var(--color-ink-200); }
+.rule-thick { border-top: 2px solid var(--color-ink-900); }
+/* The masthead double rule: thick over thin. */
+.rule-masthead { border-top: 2px solid var(--color-ink-900); box-shadow: 0 3px 0 -2px var(--color-ink-200); }
+
+/* Faint graph-paper grid for figure grounds. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(29, 26, 18, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(29, 26, 18, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* A measurement-tick column, the engineer's ruler. */
+.tick-rule {
+  background-image: repeating-linear-gradient(
+    to bottom, currentColor 0, currentColor 1px, transparent 1px, transparent 9px);
+}
+
+/* Numbered-figure caption. */
+.figcaption { font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-ink-500); }
+
+/* ── Textures: a faint topographic plate ────────────────────────────────── */
+.frost-aurora {
+  background:
+    radial-gradient(60% 70% at 80% 12%, rgba(33, 67, 79, 0.06), transparent 60%),
+    radial-gradient(50% 60% at 6% 94%, rgba(177, 78, 44, 0.05), transparent 55%);
+}
+
+/* ── Motion (all gated to prefers-reduced-motion: no-preference) ─────────── */
+@keyframes settle { from { transform: scaleY(0.6); opacity: 0; } to { transform: scaleY(1); opacity: 1; } }
+@keyframes draw-in { from { stroke-dashoffset: var(--draw-len, 820); } to { stroke-dashoffset: 0; } }
+@keyframes contour-breathe { 0%,100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.04); opacity: 1; } }
+
+.reveal { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .animate-settle { animation: settle 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .contour-drift { animation: contour-breathe 30s ease-in-out infinite; }
+  .roof-draw { stroke-dasharray: var(--draw-len, 820); animation: draw-in 1.6s cubic-bezier(0.65, 0, 0.35, 1) both; }
+  .reveal { transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal[data-shown="false"] { opacity: 0; transform: translateY(var(--reveal-y, 16px)); }
+}
+
+/* Selects: painted chevron (appearance-none would otherwise leave them bare). */
 .select-control {
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f6a83' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c6450' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.7rem center;
   background-size: 1.05rem;
   padding-right: 2.25rem;
 }
 
-/* Tabular, slightly tightened numerics everywhere a value is read. */
-.tabular {
-  font-feature-settings: "tnum" 1, "ss01" 1;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-}
-
-/* ── Textures (no images — pure CSS, zero asset weight) ──────────────────── */
-
-/* Faint blueprint grid for section grounds. */
-.bg-blueprint {
-  background-image:
-    linear-gradient(to right, rgba(13, 38, 59, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(13, 38, 59, 0.045) 1px, transparent 1px);
-  background-size: 26px 26px;
-}
-
-/* Same grid but tuned for dark ink surfaces. */
-.bg-blueprint-dark {
-  background-image:
-    linear-gradient(to right, rgba(143, 211, 224, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(143, 211, 224, 0.07) 1px, transparent 1px);
-  background-size: 30px 30px;
-}
-
-/* Soft frost aurora — a cold radial wash used behind hero content. */
-.frost-aurora {
-  background:
-    radial-gradient(60% 70% at 78% 18%, rgba(44, 196, 216, 0.18), transparent 60%),
-    radial-gradient(50% 60% at 8% 92%, rgba(17, 167, 189, 0.12), transparent 55%);
-}
-
-/* A hairline ring that reads as machined metal rather than a flat border. */
-.ring-machined {
-  box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.7) inset,
-    0 0 0 1px rgba(13, 38, 59, 0.08),
-    0 12px 30px -18px rgba(10, 22, 34, 0.35);
-}
-
-/* The snow blanket fill in diagrams animates its settle when inputs change. */
-@keyframes settle {
-  from { transform: scaleY(0.6); opacity: 0; }
-  to { transform: scaleY(1); opacity: 1; }
-}
-
-/* The contour backdrop breathes very slowly, giving the page quiet life. */
-@keyframes contour-breathe {
-  0%, 100% { transform: scale(1) translateY(0); opacity: 0.85; }
-  50% { transform: scale(1.05) translateY(-1%); opacity: 1; }
-}
-
-/* A roof line that draws itself in on load (dasharray sweep). */
-@keyframes draw-in {
-  from { stroke-dashoffset: var(--draw-len, 600); }
-  to { stroke-dashoffset: 0; }
-}
-
-/* Scroll-reveal. Content is visible by default (no-JS + reduced motion are safe);
-   only when motion is allowed do we hide-then-reveal via the data-shown flag. */
-.reveal { opacity: 1; }
-@media (prefers-reduced-motion: no-preference) {
-  .animate-settle { animation: settle 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
-  .contour-drift { animation: contour-breathe 26s ease-in-out infinite; }
-  .roof-draw { stroke-dasharray: var(--draw-len, 820); animation: draw-in 1.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
-  .reveal {
-    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .reveal[data-shown="false"] {
-    opacity: 0;
-    transform: translateY(var(--reveal-y, 18px));
-  }
-}
-
-/* Measurement-ruler motif: a column of fine ticks, the instrument's edge. */
-.tick-rule {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    currentColor 0,
-    currentColor 1px,
-    transparent 1px,
-    transparent 9px
-  );
-}
-
-/* ── Print / Save-as-PDF — clean instrument sheet, no chrome ─────────────── */
+/* ── Print / Save-as-PDF — a clean offprint ─────────────────────────────── */
 @media print {
-  header,
-  footer { display: none !important; }
+  header, footer { display: none !important; }
   main { max-width: 100% !important; padding: 0 !important; }
   .print\:hidden { display: none !important; }
-  .bg-blueprint, .bg-blueprint-dark, .frost-aurora { background: none !important; }
+  .frost-aurora { background: none !important; }
   * { box-shadow: none !important; }
 }

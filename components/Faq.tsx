@@ -1,17 +1,18 @@
 import { type FaqItem } from "@/lib/faq";
 
-export default function Faq({ items, title = "Frequently asked questions" }: { items: FaqItem[]; title?: string }) {
+export default function Faq({ items, title = "Notes & questions" }: { items: FaqItem[]; title?: string }) {
   return (
     <section className="mt-16">
-      <h2 className="font-display text-2xl font-bold tracking-tight text-ink-900">{title}</h2>
-      <div className="mt-5 divide-y divide-ink-100 overflow-hidden rounded-2xl border border-ink-100 bg-white">
+      <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl">{title}</h2>
+      <div className="mt-6 border-t-2 border-ink-900">
         {items.map((it, i) => (
-          <details key={i} className="group px-5 py-4">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-display text-[15px] font-semibold text-ink-900">
-              {it.q}
-              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-ink-200 text-ink-400 transition group-open:rotate-45 group-open:border-frost-300 group-open:text-frost-600">+</span>
+          <details key={i} className="group border-b border-ink-200 py-4">
+            <summary className="flex cursor-pointer list-none items-baseline gap-4">
+              <span className="font-mono text-xs text-frost-600">{String(i + 1).padStart(2, "0")}</span>
+              <span className="flex-1 font-display text-[17px] font-medium text-ink-900">{it.q}</span>
+              <span className="font-mono text-lg text-ink-400 transition group-open:rotate-45">+</span>
             </summary>
-            <p className="mt-3 text-sm leading-relaxed text-ink-500">{it.a}</p>
+            <p className="mt-3 pl-8 text-sm leading-relaxed text-ink-500">{it.a}</p>
           </details>
         ))}
       </div>

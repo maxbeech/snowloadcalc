@@ -25,14 +25,14 @@ export default function StatesIndex() {
               <h2 className="font-display text-sm font-semibold uppercase tracking-[0.1em] text-ink-700">{region}</h2>
               <span className="h-px flex-1 bg-ink-100" />
             </div>
-            <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white">
+            <div className="overflow-hidden border border-ink-200 bg-paper">
               <table className="w-full text-sm">
-                <thead className="bg-ink-50/60 text-left text-[11px] uppercase tracking-[0.12em] text-ink-400">
-                  <tr><th className="px-4 py-2.5 font-semibold">State</th><th className="px-4 py-2.5 font-semibold">Range (psf)</th><th className="px-4 py-2.5 font-semibold">Typical</th><th className="px-4 py-2.5 font-semibold">Band</th></tr>
+                <thead className="border-b border-ink-200 bg-ink-50/50 text-left label text-ink-500">
+                  <tr><th className="px-4 py-2.5">State</th><th className="px-4 py-2.5">Range (psf)</th><th className="px-4 py-2.5">Typical</th><th className="px-4 py-2.5">Band</th></tr>
                 </thead>
-                <tbody className="divide-y divide-ink-50">
+                <tbody className="divide-y divide-ink-100">
                   {STATE_SNOW.filter((s) => regionOf(s.abbr) === region).map((s) => (
-                    <tr key={s.slug} className="bg-white transition odd:bg-ink-50/30 hover:bg-frost-50/70">
+                    <tr key={s.slug} className="bg-paper transition odd:bg-ink-50/40 hover:bg-frost-50/70">
                       <td className="px-4 py-2.5">
                         <Link href={`/states/${s.slug}`} className="font-medium text-frost-700 hover:underline">{s.name}</Link>
                         {s.caseStudy && <span className="ml-2 rounded bg-load-50 px-1.5 py-0.5 text-[10px] font-semibold text-load-700">case study</span>}

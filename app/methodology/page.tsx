@@ -33,7 +33,7 @@ export default function Methodology() {
       <div className="mx-auto max-w-4xl px-5 py-12">
       <section>
         <h2 className="font-display text-lg font-bold text-ink-900">The equations</h2>
-        <div className="mt-3 overflow-hidden rounded-2xl border border-ink-100 bg-white">
+        <div className="mt-3 overflow-hidden border border-ink-200 bg-paper">
           <table className="w-full text-sm">
             <tbody className="divide-y divide-ink-50">
               {EQUATIONS.map(([name, eq, ref]) => (
@@ -109,7 +109,7 @@ export default function Methodology() {
         </p>
       </section>
 
-      <section className="mt-9 rounded-2xl border border-load-300/60 bg-load-50 p-5 text-sm leading-relaxed text-ink-600">
+      <section className="mt-9 border-l-2 border-load-500 bg-load-50 p-5 text-sm leading-relaxed text-ink-600">
         <h2 className="font-display text-lg font-bold text-ink-900">What this tool covers, and what it does not</h2>
         <p className="mt-2">
           SnowLoadCalc computes the <strong className="text-ink-800">balanced</strong> roof snow load, the

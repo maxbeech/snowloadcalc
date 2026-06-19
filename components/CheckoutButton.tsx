@@ -12,10 +12,10 @@ export default function CheckoutButton({ enabled = false, className }: { enabled
 
   if (!enabled) {
     return (
-      <div className="rounded-xl border border-ink-100 bg-white/70 p-4 text-sm">
-        <p className="font-semibold text-ink-800">Pro reports are launching shortly.</p>
+      <div className="border border-ink-300 bg-frost-50/40 p-4 text-sm">
+        <p className="font-semibold text-ink-800">Pro offprints are in press.</p>
         <a href="mailto:hello@snowloadcalc.com?subject=SnowLoadCalc%20Pro%20early%20access"
-          className="mt-1 inline-flex items-center gap-1 font-semibold text-frost-700 hover:underline">
+          className="mt-1 inline-flex items-center gap-1 font-semibold text-frost-700 underline-offset-4 hover:underline">
           Email us for early access
           <span aria-hidden>&rarr;</span>
         </a>
@@ -40,8 +40,8 @@ export default function CheckoutButton({ enabled = false, className }: { enabled
   return (
     <div>
       <button onClick={go} disabled={loading}
-        className={className ?? "w-full rounded-xl bg-ink-900 px-5 py-3 font-semibold text-white transition hover:bg-ink-800 disabled:opacity-60"}>
-        {loading ? "Starting checkout" : "Get the Pro report · $29"}
+        className={className ?? "w-full bg-ink-900 px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-paper transition hover:bg-ink-700 disabled:opacity-60"}>
+        {loading ? "Starting checkout" : "Get the Pro offprint · $29"}
       </button>
       {error && <p className="mt-2 text-sm text-load-700">{error}</p>}
     </div>

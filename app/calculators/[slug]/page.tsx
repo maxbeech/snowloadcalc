@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: r.h1, description: r.meta, alternates: { canonical: `/calculators/${r.slug}` } };
 }
 
-const linkCls = "rounded-lg border border-ink-100 bg-white px-3 py-1.5 text-sm text-ink-500 transition hover:border-frost-300 hover:text-ink-900";
+const linkCls = "border border-ink-200 bg-paper px-3 py-1.5 text-sm text-ink-500 transition hover:border-frost-500 hover:text-ink-900";
 
 export default async function RoofTypePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -33,20 +33,20 @@ export default async function RoofTypePage({ params }: { params: Promise<{ slug:
   if (!r) notFound();
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10">
+    <div className="mx-auto max-w-6xl px-6 py-10">
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Roof types", href: "/calculators" }, { name: r.name, href: `/calculators/${r.slug}` }]} />
 
-      <h1 className="font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">{r.h1}</h1>
+      <h1 className="font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-[2.6rem]">{r.h1}</h1>
       <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">{r.intro}</p>
-      <div className="mt-4 flex items-center gap-2">
+      <div className="mt-4 flex flex-wrap items-center gap-2.5">
         <Pill tone="load">What is different here</Pill>
         <span className="text-sm text-ink-500">{r.focus}</span>
       </div>
 
       <div className="mt-8"><Calculator seed={r.defaults} /></div>
 
-      <section className="mt-10 rounded-2xl border border-ink-100 bg-white p-6">
-        <h2 className="font-display text-lg font-bold text-ink-900">Notes for {r.name.toLowerCase()} roofs</h2>
+      <section className="mt-10 border border-ink-200 bg-paper p-6">
+        <h2 className="font-display text-lg font-semibold text-ink-900">Notes for {r.name.toLowerCase()} roofs</h2>
         <ul className="mt-3 space-y-2">
           {r.notes.map((n, i) => (
             <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-ink-600">

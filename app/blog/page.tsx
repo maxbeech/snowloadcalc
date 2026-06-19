@@ -19,9 +19,9 @@ export default function BlogIndex() {
       <div className="mx-auto grid max-w-6xl gap-3 px-5 py-12 sm:grid-cols-2">
         {POSTS.map((p) => (
           <Link key={p.slug} href={`/blog/${p.slug}`}
-            className="group rounded-2xl border border-ink-100 bg-white p-5 transition hover:-translate-y-0.5 hover:border-frost-300 hover:shadow-lg">
-            <div className="font-mono text-[11px] text-frost-600">{p.readMins} min read</div>
-            <div className="mt-2 font-display text-base font-semibold leading-snug text-ink-900 group-hover:text-frost-700">{p.title}</div>
+            className="group border border-ink-200 bg-paper p-5 transition hover:border-frost-500 hover:bg-frost-50">
+            <div className="label text-frost-600">{p.readMins} min read</div>
+            <div className="mt-2 font-display text-lg font-semibold leading-snug text-ink-900 group-hover:text-frost-700">{p.title}</div>
             <p className="mt-2 text-sm leading-relaxed text-ink-500">{p.description}</p>
           </Link>
         ))}

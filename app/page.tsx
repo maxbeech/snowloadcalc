@@ -6,7 +6,7 @@ import { Reveal } from "@/components/motion";
 import Faq from "@/components/Faq";
 import AppGallery from "@/components/AppGallery";
 import { HowItWorks, StatStrip, ClosingCTA } from "@/components/HomeSections";
-import { CTA, Eyebrow, SectionHead } from "@/components/ui";
+import { CTA, SectionHead, FigCaption } from "@/components/ui";
 import { HOME_FAQS } from "@/lib/faq";
 import { ROOF_TYPES } from "@/lib/roof-types";
 import { STATE_SNOW } from "@/lib/ground-snow";
@@ -16,105 +16,115 @@ import { SITE } from "@/lib/site";
 export default function Home() {
   return (
     <div>
-      {/* Hero: a dark instrument console */}
-      <section className="relative overflow-hidden bg-ink-950 text-white">
-        <Contours variant="dark" />
-        <div className="frost-aurora absolute inset-0 opacity-40" aria-hidden />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-frost-400/40 to-transparent" aria-hidden />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 lg:grid-cols-[1.04fr_0.96fr] lg:py-24">
-          <div>
-            <Eyebrow tone="dark">ASCE 7-22 · roof snow load instrument</Eyebrow>
-            <h1 className="mt-5 font-display text-[2.9rem] font-bold leading-[0.98] tracking-[-0.03em] text-white sm:text-[4.5rem]">
-              The weight of winter,
-              <span className="block text-frost-300">measured precisely.</span>
-            </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-ink-200">
-              A roof snow load calculator built on the ASCE 7-22 method. Set your site and roof, then read
-              the flat, sloped, minimum, rain-on-snow and §7.6.1 unbalanced loads with every factor on show.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="#calculator" className="inline-flex items-center gap-2 rounded-xl bg-frost-400 px-5 py-3 text-sm font-bold text-ink-950 transition hover:bg-frost-300">
-                Open the calculator
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="stroke-current" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-              </Link>
-              <Link href="/methodology" className="inline-flex items-center rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/35">
-                See the method
-              </Link>
-            </div>
-            <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-4">
-              {[["5", "load cases"], ["7", "ASCE factors"], ["51", "states + DC"], ["$0", "to use"]].map(([n, l]) => (
-                <div key={l} className="border-l border-white/15 pl-3">
-                  <dt className="tabular font-display text-2xl font-bold text-white">{n}</dt>
-                  <dd className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-300">{l}</dd>
-                </div>
-              ))}
-            </dl>
+      {/* Title page */}
+      <section className="relative overflow-hidden bg-paper">
+        <Contours className="opacity-60" />
+        <div className="frost-aurora absolute inset-0" aria-hidden />
+        <div className="relative mx-auto max-w-6xl px-6 pb-10 pt-10">
+          <div className="flex items-center justify-between border-b border-ink-200 pb-2 label text-ink-400">
+            <span>Vol. 01 &middot; Roof snow load</span>
+            <span className="hidden sm:block">Free &middot; No sign-up &middot; Open source</span>
           </div>
-          <HeroDiagram />
+
+          <h1 className="mt-9 max-w-4xl font-display text-[2.9rem] font-semibold leading-[0.96] tracking-[-0.02em] text-ink-900 sm:text-[5rem]">
+            The weight of winter, <span className="italic font-normal text-frost-600">measured</span> to the letter of the code.
+          </h1>
+
+          <div className="mt-10 grid items-start gap-10 lg:grid-cols-[0.92fr_1.08fr]">
+            <div>
+              <p className="dropcap max-w-md text-[17px] leading-relaxed text-ink-700">
+                SnowLoadCalc is an interactive monograph on the ASCE 7-22 roof snow load method. Enter a site
+                and a roof; read the flat, sloped, minimum, rain-on-snow and §7.6.1 unbalanced loads, with
+                every factor shown and nothing hidden.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <CTA href="#calculator">Open the calculator</CTA>
+                <CTA href="/methodology" variant="ghost">Read the method</CTA>
+              </div>
+              <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
+                {[["5", "load cases"], ["7", "ASCE factors"], ["51", "states + DC"], ["$0", "to use"]].map(([n, l]) => (
+                  <div key={l} className="border-t-2 border-ink-900 pt-1.5">
+                    <dt className="tabular font-display text-2xl font-semibold text-ink-900">{n}</dt>
+                    <dd className="label text-ink-400">{l}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+            <figure>
+              <HeroDiagram />
+              <FigCaption n="1">a live roof section. Drag the slope or step the snow depth to read the response.</FigCaption>
+            </figure>
+          </div>
         </div>
       </section>
 
-      <StatStrip />
-
-      {/* Calculator */}
-      <section id="calculator" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16">
-        <SectionHead eyebrow="The workbench"
-          title="Run your roof"
-          sub="Adjust any input and the section drawing, factor table and governing load update live. Your inputs stay in the URL, so a result is shareable and bookmarkable." />
-        <div className="mt-8"><Calculator /></div>
+      {/* §01 The worksheet */}
+      <section id="calculator" className="scroll-mt-24 border-t-2 border-ink-900 bg-paper">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <SectionHead num="01" eyebrow="The worksheet" title="Run your roof"
+            sub="Adjust any input and the section drawing, factor table and governing load update live. Your inputs stay in the URL, so a result is shareable and bookmarkable." />
+          <div className="mt-10"><Calculator /></div>
+        </div>
       </section>
 
       <HowItWorks />
       <AppGallery />
+      <StatStrip />
 
-      {/* Roof types */}
-      <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHead eyebrow="By roof type" title="Calculators tuned to your roof"
-          sub="Each one runs the same engine with the right defaults for that roof, from a flat membrane to a slippery standing-seam metal building." />
-        <Reveal className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {ROOF_TYPES.map((rt) => (
-            <Link key={rt.slug} href={`/calculators/${rt.slug}`}
-              className="group rounded-2xl border border-ink-100 bg-white p-4 transition hover:-translate-y-0.5 hover:border-frost-300 hover:shadow-lg">
-              <div className="font-display text-sm font-semibold text-ink-900 group-hover:text-frost-700">{rt.name}</div>
-              <div className="mt-1 text-xs text-ink-400">{rt.keyword}</div>
-            </Link>
-          ))}
-        </Reveal>
+      {/* §05 By roof type, an index */}
+      <section className="border-t-2 border-ink-900 bg-paper">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <SectionHead num="05" eyebrow="By roof type" title="An index of calculators"
+            sub="Each runs the same engine with the right defaults for that roof, from a flat membrane to a slippery standing-seam metal building." />
+          <Reveal className="mt-10 border-t border-ink-200">
+            {ROOF_TYPES.map((rt, i) => (
+              <Link key={rt.slug} href={`/calculators/${rt.slug}`}
+                className="group flex items-baseline gap-4 border-b border-ink-200 py-4">
+                <span className="font-mono text-xs text-ink-400">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-display text-lg font-medium text-ink-900 transition group-hover:text-frost-600">{rt.name}</span>
+                <span className="mx-1 hidden flex-1 translate-y-[-3px] border-b border-dotted border-ink-300 sm:block" />
+                <span className="hidden font-mono text-xs text-ink-400 sm:block">{rt.keyword}</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="shrink-0 stroke-ink-300 transition group-hover:translate-x-0.5 group-hover:stroke-frost-600" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </Link>
+            ))}
+          </Reveal>
+        </div>
       </section>
 
-      {/* States */}
-      <section className="mx-auto max-w-6xl px-5 pb-16">
-        <SectionHead eyebrow="By state" title="Ground snow load, state by state"
+      {/* §06 By state, appendix preview */}
+      <section className="mx-auto max-w-6xl px-6 py-16">
+        <SectionHead num="06" eyebrow="Appendix · by state" title="Ground snow load, state by state"
           sub="Planning ranges for the populated parts of every state, with mountain case-study zones flagged. Confirm the exact value for your site with your building department." />
-        <div className="mt-7 flex flex-wrap gap-1.5">
+        <div className="mt-8 flex flex-wrap gap-1.5">
           {STATE_SNOW.map((s) => (
             <Link key={s.slug} href={`/states/${s.slug}`}
-              className="rounded-lg border border-ink-100 bg-white px-2.5 py-1 text-xs font-medium text-ink-500 transition hover:border-frost-300 hover:text-ink-900">
+              className="border border-ink-200 px-2.5 py-1 font-mono text-xs text-ink-500 transition hover:border-frost-500 hover:text-frost-700">
               {s.abbr}
             </Link>
           ))}
         </div>
-        <CTA href="/states" variant="ghost" className="mt-6">Browse all states</CTA>
+        <CTA href="/states" variant="ghost" className="mt-7">Read the full appendix</CTA>
       </section>
 
-      {/* Guides */}
-      <section className="mx-auto max-w-6xl px-5 pb-16">
-        <SectionHead eyebrow="Guides" title="Snow load, explained plainly"
-          sub="Practical, accurate walkthroughs for builders, engineers, solar installers and homeowners." />
-        <Reveal className="mt-8 grid gap-3 sm:grid-cols-3">
-          {POSTS.slice(0, 3).map((p) => (
-            <Link key={p.slug} href={`/blog/${p.slug}`}
-              className="group rounded-2xl border border-ink-100 bg-white p-5 transition hover:-translate-y-0.5 hover:border-frost-300 hover:shadow-lg">
-              <div className="font-mono text-[11px] text-frost-600">{p.readMins} min read</div>
-              <div className="mt-2 font-display text-[15px] font-semibold leading-snug text-ink-900 group-hover:text-frost-700">{p.title}</div>
-              <p className="mt-2 text-sm leading-relaxed text-ink-500">{p.description}</p>
-            </Link>
-          ))}
-        </Reveal>
-        <CTA href="/blog" variant="ghost" className="mt-6">All guides</CTA>
+      {/* Essays */}
+      <section className="border-t-2 border-ink-900 bg-paper">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <SectionHead eyebrow="Essays" title="Snow load, explained plainly"
+            sub="Practical, accurate walkthroughs for builders, engineers, solar installers and homeowners." />
+          <Reveal className="mt-10 grid gap-px border border-ink-200 bg-ink-200 sm:grid-cols-3">
+            {POSTS.slice(0, 3).map((p) => (
+              <Link key={p.slug} href={`/blog/${p.slug}`} className="group bg-paper p-6 transition hover:bg-frost-50">
+                <div className="label text-frost-600">{p.readMins} min read</div>
+                <div className="mt-3 font-display text-lg font-semibold leading-snug text-ink-900 group-hover:text-frost-700">{p.title}</div>
+                <p className="mt-2 text-sm leading-relaxed text-ink-500">{p.description}</p>
+              </Link>
+            ))}
+          </Reveal>
+          <CTA href="/blog" variant="ghost" className="mt-7">All essays</CTA>
+        </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-5"><Faq items={HOME_FAQS} /></div>
+      <div className="mx-auto max-w-6xl px-6"><Faq items={HOME_FAQS} /></div>
       <div className="mt-16"><ClosingCTA /></div>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

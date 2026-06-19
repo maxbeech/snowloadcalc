@@ -9,8 +9,8 @@ export default function Contours({ variant = "light", className = "", drift = tr
   const dark = variant === "dark";
   // Two strokes per contour: a brighter index line every third ring, so the field
   // reads like a real topographic map rather than faint noise.
-  const base = dark ? "rgba(143,211,224,0.16)" : "rgba(23,51,71,0.09)";
-  const index = dark ? "rgba(143,211,224,0.34)" : "rgba(17,134,160,0.20)";
+  const base = dark ? "rgba(164,192,199,0.16)" : "rgba(29,26,18,0.08)";
+  const index = dark ? "rgba(164,192,199,0.32)" : "rgba(33,67,79,0.22)";
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden
       className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}>

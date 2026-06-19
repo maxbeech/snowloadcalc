@@ -1,4 +1,4 @@
-// Unbalanced snow load for hip & gable roofs — ASCE/SEI 7-22 §7.6.1. Wind blows
+// Unbalanced snow load for hip & gable roofs, per ASCE/SEI 7-22 §7.6.1. Wind blows
 // snow from the windward slope onto the leeward slope, which is the case that
 // often governs the ridge and leeward rafters. Pure, deterministic, transparent.
 //
@@ -39,7 +39,7 @@ export function computeUnbalanced(inp: SnowInputs, r: SnowResult): UnbalancedRes
 
   if (inp.shape !== "gable" && inp.shape !== "hip") {
     return { ...empty, reason: inp.shape === "monoslope"
-      ? "Monoslope/shed roofs use the §7.6.2 unbalanced case (not the gable rule) — check it separately."
+      ? "Monoslope/shed roofs use the §7.6.2 unbalanced case (not the gable rule); check it separately."
       : "Unbalanced snow load (§7.6.1) applies to hip and gable roofs." };
   }
   if (inp.slopeDeg < UNBAL_MIN_DEG) {

@@ -9,31 +9,30 @@ import { decodeInputs, encodeInputs } from "@/lib/snow-url";
 import CalcResults from "./CalcResults";
 
 const selectCls =
-  "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-200 focus:outline-none";
+  "mt-1 w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 transition focus-visible:border-frost-400 focus-visible:ring-2 focus-visible:ring-frost-200 focus:outline-none";
+// Selects add the painted chevron; number inputs reuse the base only.
+const selectControl = `${selectCls} select-control`;
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="block text-sm font-medium text-slate-700">{label}</span>
+      <span className="block text-[13px] font-semibold text-ink-700">{label}</span>
       {children}
-      {hint && <span className="mt-0.5 block text-xs text-slate-400">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs leading-snug text-ink-400">{hint}</span>}
     </label>
   );
 }
 
 // Number input that lets you clear and retype (keeps a raw string while editing,
-// clamps to [min,max] only on blur) — fixes the papercut where the field snaps
-// back to the minimum the instant you delete a digit.
+// clamps to [min,max] only on blur), so deleting a digit never snaps to the min.
 function NumberField({ value, min, max, step = 1, onChange, ariaLabel }:
   { value: number; min: number; max: number; step?: number; onChange: (n: number) => void; ariaLabel?: string }) {
   const [raw, setRaw] = useState(String(value));
-  // Resync the editable string when `value` changes externally (URL load, presets)
-  // using the React-recommended "adjust state during render" pattern — no effect.
   const [lastValue, setLastValue] = useState(value);
   if (value !== lastValue) { setLastValue(value); setRaw(String(value)); }
   return (
-    <input type="number" inputMode="decimal" min={min} max={max} step={step} className={selectCls} value={raw}
-      aria-label={ariaLabel}
+    <input type="number" inputMode="decimal" min={min} max={max} step={step} value={raw} aria-label={ariaLabel}
+      className={`${selectCls} tabular font-mono`}
       onChange={(e) => {
         setRaw(e.target.value);
         if (e.target.value === "") return;
@@ -49,22 +48,26 @@ function NumberField({ value, min, max, step = 1, onChange, ariaLabel }:
 
 const PITCHES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12]; // rise per 12 run
 
+// Show a pitch in the dropdown only when the slope really matches one (within
+// 0.3°), otherwise read "Custom", never silently rounding 25° to "6:12".
+function matchedPitch(slopeDeg: number): number | "" {
+  const p = Math.round(Math.tan((slopeDeg * Math.PI) / 180) * 12);
+  if (!PITCHES.includes(p)) return "";
+  return Math.abs(pitchToDeg(p) - slopeDeg) <= 0.3 ? p : "";
+}
+
 export default function Calculator({ seed }: { seed?: Partial<SnowInputs> }) {
   const [inp, setInp] = useState<SnowInputs>(() => ({ ...DEFAULT_SNOW, ...seed }));
   const hydrated = useRef(false);
 
   useEffect(() => {
-    // Hydrate inputs from the URL on mount so shared/bookmarked links restore the
-    // form. window is client-only, so this read must live in an effect.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setInp(decodeInputs(window.location.search, seed));
     hydrated.current = true;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    // Reflect inputs back into the URL (shareable). Skipped until hydration so we
-    // never clobber incoming params on first paint.
     if (!hydrated.current) return;
     window.history.replaceState(null, "", `${window.location.pathname}?${encodeInputs(inp)}`);
   }, [inp]);
@@ -74,37 +77,38 @@ export default function Calculator({ seed }: { seed?: Partial<SnowInputs> }) {
 
   return (
     <div>
-      {/* Sticky live summary on mobile — keeps the answer visible while scrolling the form */}
       <div role="status" aria-live="polite" aria-atomic="true"
-        className="sticky top-0 z-20 mb-3 flex items-center justify-between rounded-xl border border-slate-200 bg-white/95 px-4 py-2 shadow-sm backdrop-blur md:hidden print:hidden">
-        <span className="text-xs font-medium uppercase tracking-wide text-slate-500">Design snow load</span>
-        <span className="text-lg font-bold text-sky-700">{r.design} <span className="text-xs font-medium text-slate-400">psf</span></span>
+        className="sticky top-[57px] z-20 mb-3 flex items-center justify-between rounded-xl border border-ink-100 bg-white/95 px-4 py-2 shadow-sm backdrop-blur md:hidden print:hidden">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-400">Design snow load</span>
+        <span className="tabular font-display text-lg font-bold text-frost-600">{r.design}<span className="text-xs font-medium text-ink-300"> psf</span></span>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Your roof</h2>
-          <div className="mt-3 space-y-3">
-            <Field label="Ground snow load, Pg (psf)" hint="From the ASCE 7 Hazard Tool or your building department. See the per-state pages for a range.">
+      <div className="grid gap-5 md:grid-cols-2">
+        <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-sm ring-machined">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-sm font-semibold text-ink-900">Your roof</h2>
+            <span className="rounded-full border border-frost-200 bg-frost-50 px-2 py-0.5 text-[10px] font-semibold text-frost-700">ASCE 7-22</span>
+          </div>
+          <div className="mt-4 space-y-3.5">
+            <Field label="Ground snow load, Pg (psf)" hint="From the ASCE 7 Hazard Tool or your building department. The per-state pages give a planning range.">
               <NumberField value={inp.pg} min={0} max={400} step={1} onChange={(n) => set("pg", n)} ariaLabel="Ground snow load in psf" />
             </Field>
 
-            <Field label="Roof shape" hint="Gable & hip roofs need the §7.6.1 unbalanced (leeward-drift) check.">
-              <select className={selectCls} value={inp.shape} onChange={(e) => set("shape", e.target.value as RoofShape)}>
-                <option value="flat">Flat / low-slope</option>
+            <Field label="Roof shape" hint="Gable and hip roofs trigger the §7.6.1 unbalanced (leeward drift) check.">
+              <select className={selectControl} value={inp.shape} onChange={(e) => set("shape", e.target.value as RoofShape)}>
+                <option value="flat">Flat or low-slope</option>
                 <option value="gable">Gable</option>
                 <option value="hip">Hip</option>
-                <option value="monoslope">Monoslope / shed</option>
+                <option value="monoslope">Monoslope or shed</option>
               </select>
             </Field>
 
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Roof slope (degrees)" hint={inp.slopeDeg > 0 ? `≈ ${degToPitch(inp.slopeDeg)} pitch` : "0 = flat"}>
+              <Field label="Roof slope (degrees)" hint={inp.slopeDeg > 0 ? `about ${degToPitch(inp.slopeDeg)} pitch` : "0 = flat"}>
                 <NumberField value={inp.slopeDeg} min={0} max={70} step={0.5} onChange={(n) => set("slopeDeg", n)} ariaLabel="Roof slope in degrees" />
               </Field>
-              <Field label="…or pick a pitch" hint="Sets the slope from rise-in-12.">
-                <select className={selectCls} aria-label="Roof pitch in twelve"
-                  value={PITCHES.includes(Math.round(Math.tan((inp.slopeDeg * Math.PI) / 180) * 12)) ? Math.round(Math.tan((inp.slopeDeg * Math.PI) / 180) * 12) : ""}
+              <Field label="or pick a pitch" hint="Sets the slope from rise in 12.">
+                <select className={selectControl} aria-label="Roof pitch in twelve" value={matchedPitch(inp.slopeDeg)}
                   onChange={(e) => { if (e.target.value !== "") set("slopeDeg", pitchToDeg(Number(e.target.value))); }}>
                   <option value="">Custom</option>
                   {PITCHES.map((p) => <option key={p} value={p}>{p === 0 ? "Flat (0:12)" : `${p}:12`}</option>)}
@@ -112,34 +116,34 @@ export default function Calculator({ seed }: { seed?: Partial<SnowInputs> }) {
               </Field>
             </div>
 
-            <Field label="Thermal condition (Ct)" hint="How warm is the space under the roof?">
-              <select className={selectCls} value={inp.thermal} onChange={(e) => set("thermal", e.target.value as Thermal)}>
-                <option value="heated">Heated building — Ct 1.0</option>
-                <option value="slightlyHeated">Kept just above freezing / cold ventilated roof — Ct 1.1</option>
-                <option value="unheated">Unheated / open structure — Ct 1.2</option>
-                <option value="freezer">Continuously below freezing (freezer) — Ct 1.3</option>
-                <option value="greenhouse">Continuously heated greenhouse — Ct 0.85</option>
+            <Field label="Thermal condition, Ct" hint="How warm is the space under the roof?">
+              <select className={selectControl} value={inp.thermal} onChange={(e) => set("thermal", e.target.value as Thermal)}>
+                <option value="heated">Heated building · Ct 1.0</option>
+                <option value="slightlyHeated">Just above freezing or cold ventilated roof · Ct 1.1</option>
+                <option value="unheated">Unheated or open structure · Ct 1.2</option>
+                <option value="freezer">Continuously below freezing (freezer) · Ct 1.3</option>
+                <option value="greenhouse">Continuously heated greenhouse · Ct 0.85</option>
               </select>
             </Field>
 
-            <Field label="Roof surface (Cs)" hint="Smooth metal, membrane and glass are 'slippery' — they shed sooner.">
-              <select className={selectCls} value={inp.surface} onChange={(e) => set("surface", e.target.value as Surface)}>
-                <option value="nonslippery">Shingles / textured — not slippery</option>
-                <option value="slippery">Metal / membrane / glass — slippery</option>
+            <Field label="Roof surface, Cs" hint="Smooth metal, membrane and glass count as slippery; they shed snow sooner.">
+              <select className={selectControl} value={inp.surface} onChange={(e) => set("surface", e.target.value as Surface)}>
+                <option value="nonslippery">Shingles or textured (not slippery)</option>
+                <option value="slippery">Metal, membrane or glass (slippery)</option>
               </select>
             </Field>
 
             <div className="grid grid-cols-2 gap-3">
               <Field label="Terrain" hint="Surface roughness around the site.">
-                <select className={selectCls} value={inp.terrain} onChange={(e) => set("terrain", e.target.value as Terrain)}>
-                  <option value="B">B — suburban / wooded</option>
-                  <option value="C">C — open terrain</option>
-                  <option value="D">D — flat, unobstructed (coast)</option>
-                  <option value="aboveTreeline">Above treeline / windswept</option>
+                <select className={selectControl} value={inp.terrain} onChange={(e) => set("terrain", e.target.value as Terrain)}>
+                  <option value="B">B · suburban or wooded</option>
+                  <option value="C">C · open terrain</option>
+                  <option value="D">D · flat, unobstructed</option>
+                  <option value="aboveTreeline">Above treeline, windswept</option>
                 </select>
               </Field>
-              <Field label="Roof exposure (Ce)">
-                <select className={selectCls} value={inp.roofExposure} onChange={(e) => set("roofExposure", e.target.value as RoofExposure)}>
+              <Field label="Roof exposure, Ce">
+                <select className={selectControl} value={inp.roofExposure} onChange={(e) => set("roofExposure", e.target.value as RoofExposure)}>
                   <option value="fully">Fully exposed</option>
                   <option value="partial">Partially exposed</option>
                   <option value="sheltered">Sheltered</option>
@@ -148,20 +152,20 @@ export default function Calculator({ seed }: { seed?: Partial<SnowInputs> }) {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Risk category (Is)" hint="Most buildings are II.">
-                <select className={selectCls} value={inp.risk} onChange={(e) => set("risk", e.target.value as RiskCategory)}>
-                  <option value="I">I — low hazard (Is 0.8)</option>
-                  <option value="II">II — normal (Is 1.0)</option>
-                  <option value="III">III — substantial (Is 1.1)</option>
-                  <option value="IV">IV — essential (Is 1.2)</option>
+              <Field label="Risk category, Is" hint="Most buildings are II.">
+                <select className={selectControl} value={inp.risk} onChange={(e) => set("risk", e.target.value as RiskCategory)}>
+                  <option value="I">I · low hazard (Is 0.8)</option>
+                  <option value="II">II · normal (Is 1.0)</option>
+                  <option value="III">III · substantial (Is 1.1)</option>
+                  <option value="IV">IV · essential (Is 1.2)</option>
                 </select>
               </Field>
-              <Field label="Eave-to-ridge width, W (ft)" hint="Rain-on-snow + unbalanced drift.">
+              <Field label="Eave-to-ridge width, W (ft)" hint="Drives rain-on-snow and unbalanced drift.">
                 <NumberField value={inp.width} min={5} max={500} step={1} onChange={(n) => set("width", n)} ariaLabel="Eave to ridge width in feet" />
               </Field>
             </div>
 
-            <Field label="Roof plan area (sq ft, optional)" hint="To estimate the total snow weight.">
+            <Field label="Roof plan area (sq ft, optional)" hint="Used to estimate the total snow weight.">
               <NumberField value={inp.area ?? 0} min={0} max={1000000} step={10} onChange={(n) => set("area", n)} ariaLabel="Roof plan area in square feet" />
             </Field>
           </div>

@@ -11,7 +11,7 @@ export const HOME_FAQS: FaqItem[] = [
   },
   {
     q: "What is the difference between ground snow load and roof snow load?",
-    a: "Ground snow load (Pg) is the weight of snow on the open ground at your site — it is fixed by your location and set by the ASCE 7 Hazard Tool or your building department. Roof snow load is what your roof actually has to carry: it is the ground value adjusted for exposure, the roof's warmth, its importance and its slope, and it is almost always less than Pg on a normal heated building.",
+    a: "Ground snow load (Pg) is the weight of snow on the open ground at your site. It is fixed by your location and set by the ASCE 7 Hazard Tool or your building department. Roof snow load is what your roof actually has to carry: it is the ground value adjusted for exposure, the roof's warmth, its importance and its slope, and it is almost always less than Pg on a normal heated building.",
   },
   {
     q: "Where do I find my ground snow load?",

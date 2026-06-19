@@ -1,70 +1,107 @@
 import Link from "next/link";
 import Calculator from "@/components/Calculator";
+import HeroDiagram from "@/components/HeroDiagram";
 import Faq from "@/components/Faq";
+import { HowItWorks, WhatYouGet, ClosingCTA } from "@/components/HomeSections";
+import { CTA, Eyebrow, Pill, SectionHead } from "@/components/ui";
 import { HOME_FAQS } from "@/lib/faq";
 import { ROOF_TYPES } from "@/lib/roof-types";
 import { STATE_SNOW } from "@/lib/ground-snow";
+import { POSTS } from "@/lib/posts";
 import { SITE } from "@/lib/site";
 
 export default function Home() {
   return (
     <div>
-      <section className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-          Roof Snow Load Calculator
-        </h1>
-        <p className="mt-2 max-w-2xl text-slate-600">
-          Compute the design roof snow load using the ASCE 7-22 method. Enter your ground snow load,
-          roof shape, slope, exposure and thermal condition — get the flat, sloped, minimum, governing
-          and gable <strong>unbalanced</strong> (§7.6.1) loads in psf, with every factor shown. A
-          separate <a href="/drift" className="text-sky-700 hover:underline">drift calculator</a> covers
-          roof steps. Free, no sign-up.
-        </p>
-      </section>
-
-      <Calculator />
-
-      <section className="mt-10 grid gap-4 sm:grid-cols-3">
-        {[
-          { t: "Real ASCE 7-22 math", d: "The exact Pf = 0.7·Ce·Ct·Is·Pg equation, slope factor, minimum load and rain-on-snow surcharge — not a rule of thumb." },
-          { t: "Every factor shown", d: "We display Ce, Ct, Is and Cs and how they combine, so you can check and defend the number." },
-          { t: "Your site's ground snow", d: "Pg comes from the ASCE Hazard Tool or your AHJ. Our state pages give a range; you confirm the exact value." },
-        ].map((c) => (
-          <div key={c.t} className="rounded-2xl border border-slate-200 bg-white p-4">
-            <div className="text-sm font-semibold text-slate-900">{c.t}</div>
-            <p className="mt-1 text-sm text-slate-600">{c.d}</p>
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-ink-100">
+        <div className="frost-aurora absolute inset-0" aria-hidden />
+        <div className="bg-blueprint absolute inset-0 opacity-50" aria-hidden />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+          <div>
+            <Eyebrow>ASCE 7-22 · Chapter 7</Eyebrow>
+            <h1 className="mt-4 font-display text-4xl font-bold leading-[1.04] tracking-tight text-ink-900 sm:text-[3.25rem]">
+              Know exactly how much snow your roof has to carry.
+            </h1>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-500">
+              A precise roof snow load calculator built on the ASCE 7-22 method. Enter your site and roof,
+              then read the flat, sloped, minimum, rain-on-snow and unbalanced loads with every factor on show.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <CTA href="#calculator">Open the calculator</CTA>
+              <CTA href="/methodology" variant="ghost">See the method</CTA>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-2">
+              <Pill>Every factor shown</Pill>
+              <Pill>Free, no sign-up</Pill>
+              <Pill tone="load">Unbalanced and drift</Pill>
+              <Pill tone="ink">All 50 states</Pill>
+            </div>
           </div>
-        ))}
+          <HeroDiagram />
+        </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-bold text-slate-900">Snow load by roof type</h2>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Calculator */}
+      <section id="calculator" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-14">
+        <SectionHead eyebrow="The calculator"
+          title="Run your roof"
+          sub="Adjust any input and the section drawing, factor table and governing load update live. Your inputs stay in the URL, so a result is shareable and bookmarkable." />
+        <div className="mt-8"><Calculator /></div>
+      </section>
+
+      <HowItWorks />
+      <WhatYouGet />
+
+      {/* Roof types */}
+      <section className="mx-auto max-w-6xl px-5 py-16">
+        <SectionHead eyebrow="By roof type" title="Calculators tuned to your roof"
+          sub="Each one runs the same engine with the right defaults for that roof, from a flat membrane to a slippery standing-seam metal building." />
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {ROOF_TYPES.map((rt) => (
             <Link key={rt.slug} href={`/calculators/${rt.slug}`}
-              className="rounded-xl border border-slate-200 bg-white p-3 text-sm hover:border-sky-300 hover:bg-sky-50">
-              <div className="font-medium text-slate-900">{rt.name}</div>
-              <div className="mt-0.5 text-xs text-slate-500">{rt.keyword}</div>
+              className="group rounded-2xl border border-ink-100 bg-white p-4 transition hover:-translate-y-0.5 hover:border-frost-300 hover:shadow-lg">
+              <div className="font-display text-sm font-semibold text-ink-900 group-hover:text-frost-700">{rt.name}</div>
+              <div className="mt-1 text-xs text-ink-400">{rt.keyword}</div>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-bold text-slate-900">Ground snow load by state</h2>
-        <p className="mt-1 text-sm text-slate-600">Planning ranges for every state, with mountainous case-study states flagged. Confirm your exact site value with your building department.</p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
+      {/* States */}
+      <section className="mx-auto max-w-6xl px-5 pb-16">
+        <SectionHead eyebrow="By state" title="Ground snow load, state by state"
+          sub="Planning ranges for the populated parts of every state, with mountain case-study zones flagged. Confirm the exact value for your site with your building department." />
+        <div className="mt-7 flex flex-wrap gap-1.5">
           {STATE_SNOW.map((s) => (
             <Link key={s.slug} href={`/states/${s.slug}`}
-              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs text-slate-600 hover:border-sky-300 hover:text-slate-900">
+              className="rounded-lg border border-ink-100 bg-white px-2.5 py-1 text-xs font-medium text-ink-500 transition hover:border-frost-300 hover:text-ink-900">
               {s.abbr}
             </Link>
           ))}
         </div>
-        <Link href="/states" className="mt-3 inline-block text-sm font-medium text-sky-700 hover:underline">See all states →</Link>
+        <CTA href="/states" variant="ghost" className="mt-6">Browse all states</CTA>
       </section>
 
-      <Faq items={HOME_FAQS} />
+      {/* Guides */}
+      <section className="mx-auto max-w-6xl px-5 pb-16">
+        <SectionHead eyebrow="Guides" title="Snow load, explained plainly"
+          sub="Practical, accurate walkthroughs for builders, engineers, solar installers and homeowners." />
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          {POSTS.slice(0, 3).map((p) => (
+            <Link key={p.slug} href={`/blog/${p.slug}`}
+              className="group rounded-2xl border border-ink-100 bg-white p-5 transition hover:-translate-y-0.5 hover:border-frost-300 hover:shadow-lg">
+              <div className="font-mono text-[11px] text-frost-600">{p.readMins} min read</div>
+              <div className="mt-2 font-display text-[15px] font-semibold leading-snug text-ink-900 group-hover:text-frost-700">{p.title}</div>
+              <p className="mt-2 text-sm leading-relaxed text-ink-500">{p.description}</p>
+            </Link>
+          ))}
+        </div>
+        <CTA href="/blog" variant="ghost" className="mt-6">All guides</CTA>
+      </section>
+
+      <div className="mx-auto max-w-6xl px-5"><Faq items={HOME_FAQS} /></div>
+      <div className="mt-16"><ClosingCTA /></div>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "WebApplication",

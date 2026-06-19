@@ -1,4 +1,4 @@
-// Roof snow load engine — implements the ASCE/SEI 7-22 Chapter 7 snow-load
+// Roof snow load engine. Implements the ASCE/SEI 7-22 Chapter 7 snow-load
 // procedure exactly. Pure, deterministic, client-side. Every factor is returned
 // in the result so the calculation is transparent and defensible (no black box).
 //
@@ -7,7 +7,7 @@
 //   Minimum snow load     Pm = Is · min(Pg, 20)              (§7.3.4, slope < 15°)
 //   Rain-on-snow surcharge +5 psf to Ps when 0 < Pg ≤ 20 and slope < W/50 (§7.10)
 //
-// Pg (ground snow load) is always a site-specific input — it is set by the
+// Pg (ground snow load) is always a site-specific input. It is set by the
 // Authority Having Jurisdiction / the ASCE 7 Hazard Tool, never assumed here.
 
 export type RiskCategory = "I" | "II" | "III" | "IV";
@@ -23,8 +23,8 @@ export interface SnowInputs {
   terrain: Terrain; // surface roughness / exposure category
   roofExposure: RoofExposure;
   thermal: Thermal; // -> Ct (thermal factor)
-  surface: Surface; // slippery (metal/membrane) vs not — for Cs
-  shape: RoofShape; // roof geometry — drives the §7.6.1 unbalanced case
+  surface: Surface; // slippery (metal/membrane) vs not, for Cs
+  shape: RoofShape; // roof geometry; drives the §7.6.1 unbalanced case
   slopeDeg: number; // roof slope from horizontal, degrees (0–70)
   width: number; // eave-to-ridge horizontal distance W, ft (rain-on-snow + unbalanced)
   area?: number; // optional roof plan area, sq ft (for total-weight estimate)
@@ -40,10 +40,10 @@ export function degToPitch(deg: number): string {
   return `${rise}:12`;
 }
 
-// Importance factor Is for snow loads — ASCE 7-22 Table 1.5-2.
+// Importance factor Is for snow loads (ASCE 7-22 Table 1.5-2).
 export const IS: Record<RiskCategory, number> = { I: 0.8, II: 1.0, III: 1.1, IV: 1.2 };
 
-// Thermal factor Ct — ASCE 7-22 Table 7.3-2.
+// Thermal factor Ct (ASCE 7-22 Table 7.3-2).
 export const CT: Record<Thermal, number> = {
   heated: 1.0, // continuously heated (most occupied buildings)
   slightlyHeated: 1.1, // kept just above freezing, or cold ventilated roof (R > 25)
@@ -52,16 +52,16 @@ export const CT: Record<Thermal, number> = {
   greenhouse: 0.85, // continuously heated greenhouse, low-R glazing
 };
 
-// Exposure factor Ce — ASCE 7-22 Table 7.3-1. [terrain][roofExposure].
+// Exposure factor Ce (ASCE 7-22 Table 7.3-1). [terrain][roofExposure].
 export const CE: Record<Terrain, Record<RoofExposure, number>> = {
   B: { fully: 0.9, partial: 1.0, sheltered: 1.2 },
   C: { fully: 0.9, partial: 1.0, sheltered: 1.1 },
   D: { fully: 0.8, partial: 0.9, sheltered: 1.0 },
-  // Above the treeline in windswept terrain — sheltered does not apply; reuse partial.
+  // Above the treeline in windswept terrain, sheltered does not apply; reuse partial.
   aboveTreeline: { fully: 0.7, partial: 0.8, sheltered: 0.8 },
 };
 
-// Roof slope factor Cs — ASCE 7-22 §7.4.1–7.4.4 / Fig. 7.4-1.
+// Roof slope factor Cs (ASCE 7-22 §7.4.1–7.4.4 / Fig. 7.4-1).
 // Cs = 1 up to a breakpoint slope, then falls linearly to 0 at 70°.
 // The breakpoint depends on warm vs cold roof (from Ct) and surface slipperiness.
 export function slopeFactor(slopeDeg: number, ct: number, surface: Surface): number {
@@ -143,7 +143,7 @@ export const DEFAULT_SNOW: SnowInputs = {
   thermal: "heated",
   surface: "nonslippery",
   shape: "gable",
-  slopeDeg: 18.4, // ≈ a common 4:12 pitch — the most representative residential roof
+  slopeDeg: 18.4, // ≈ a common 4:12 pitch, the most representative residential roof
   width: 30,
   area: 1500,
 };
@@ -163,7 +163,7 @@ export function interpretSnow(inp: SnowInputs, r: SnowResult): SnowInterpretatio
   const steep = inp.slopeDeg >= 15;
   const gableLike = inp.shape === "gable" || inp.shape === "hip";
   return {
-    headline: `Design roof snow load ≈ ${r.design} psf` + (r.pg === 0 ? " (no ground snow — verify locally)" : ""),
+    headline: `Design roof snow load ≈ ${r.design} psf` + (r.pg === 0 ? " (no ground snow; verify locally)" : ""),
     designText:
       `Flat-roof load Pf = 0.7 × Ce(${r.Ce}) × Ct(${r.Ct}) × Is(${r.Is}) × Pg(${fmt(r.pg)}) = ${r.pf} psf. ` +
       (inp.slopeDeg > 0
@@ -172,7 +172,7 @@ export function interpretSnow(inp: SnowInputs, r: SnowResult): SnowInterpretatio
       (r.rainOnSnow ? ` A +${r.rainOnSnow} psf rain-on-snow surcharge applies (§7.10).` : ""),
     governText:
       r.governs === "minimum"
-        ? `The §7.3.4 minimum, Pm = ${r.pm} psf, governs here — low-slope roofs must carry at least this.`
+        ? `The §7.3.4 minimum, Pm = ${r.pm} psf, governs here: low-slope roofs must carry at least this.`
         : steep
           ? `At ${inp.slopeDeg}° the §7.3.4 minimum does not apply, so the balanced load of ${r.balanced} psf governs.`
           : `The balanced load of ${r.balanced} psf governs (it exceeds the ${r.pm} psf minimum).`,
@@ -181,7 +181,7 @@ export function interpretSnow(inp: SnowInputs, r: SnowResult): SnowInterpretatio
       gableLike
         ? "The §7.6.1 unbalanced (leeward-drift) case is computed above for this gable/hip roof; at roof steps, parapets and walls also check drift loads (§7.7) with the drift calculator, plus sliding snow (§7.9) onto anything below."
         : "At roof steps, parapets and against walls check drift loads (§7.7) with the drift calculator, and check sliding snow (§7.9) where this roof sheds onto a lower roof, walk or equipment.",
-      "Ground snow load Pg is set by your local building department / the ASCE 7 Hazard Tool — always confirm the value for your exact site before you build or submit.",
+      "Ground snow load Pg is set by your local building department / the ASCE 7 Hazard Tool. Always confirm the value for your exact site before you build or submit.",
     ],
     nextSteps: [
       "Confirm your site's ground snow load with your building department or the ASCE 7 Hazard Tool.",

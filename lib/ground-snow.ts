@@ -1,12 +1,12 @@
 // Ground snow load (Pg) reference by US state, for the programmatic per-state
 // pages and as a sensible starting value for the calculator.
 //
-// IMPORTANT — honesty about the data: under ASCE 7-22 the *governing* ground
+// IMPORTANT, on honesty about the data: under ASCE 7-22 the *governing* ground
 // snow load for a site comes from the ASCE 7 Hazard Tool or the local building
 // department, not from a national lookup. The ranges below are planning ranges
 // for the *populated* parts of each state, read from the ASCE 7 ground snow
 // load map (Fig. 7.2-1) and common state code amendments. Mountainous states
-// are flagged `caseStudy` because elevation — not the state — sets the value,
+// are flagged `caseStudy` because elevation (not the state) sets the value,
 // and it can range from ~30 to 150+ psf within one county. We never assert a
 // false per-ZIP precision: every page tells the user to confirm with their AHJ.
 
@@ -30,8 +30,22 @@ export function snowBand(pg: number): string {
   return "very high";
 }
 
+// Census regions, used to group the state list so it reads as a reference, not
+// a 51-row dump. Snowiness clusters by region, so this also aids scanning.
+export const REGIONS = ["Northeast", "Midwest", "South", "West"] as const;
+export type Region = (typeof REGIONS)[number];
+const REGION_BY_ABBR: Record<string, Region> = {
+  CT: "Northeast", ME: "Northeast", MA: "Northeast", NH: "Northeast", NJ: "Northeast", NY: "Northeast", PA: "Northeast", RI: "Northeast", VT: "Northeast",
+  IL: "Midwest", IN: "Midwest", IA: "Midwest", KS: "Midwest", MI: "Midwest", MN: "Midwest", MO: "Midwest", NE: "Midwest", ND: "Midwest", OH: "Midwest", SD: "Midwest", WI: "Midwest",
+  AL: "South", AR: "South", DE: "South", DC: "South", FL: "South", GA: "South", KY: "South", LA: "South", MD: "South", MS: "South", NC: "South", OK: "South", SC: "South", TN: "South", TX: "South", VA: "South", WV: "South",
+  AK: "West", AZ: "West", CA: "West", CO: "West", HI: "West", ID: "West", MT: "West", NV: "West", NM: "West", OR: "West", UT: "West", WA: "West", WY: "West",
+};
+export function regionOf(abbr: string): Region {
+  return REGION_BY_ABBR[abbr] ?? "West";
+}
+
 const CS = (s: string) =>
-  `${s} Mountain and high-elevation sites are ASCE 7 "case study" zones — the ground snow load is driven by elevation and can be several times the lowland value, so confirm your exact site with the ASCE Hazard Tool or your building department.`;
+  `${s} Mountain and high-elevation sites are ASCE 7 "case study" zones: the ground snow load is driven by elevation and can be several times the lowland value, so confirm your exact site with the ASCE Hazard Tool or your building department.`;
 
 export const STATE_SNOW: StateSnow[] = [
   { slug: "alabama", name: "Alabama", abbr: "AL", lowPg: 0, highPg: 5, typicalPg: 5, caseStudy: false, note: "Snow load is minor across most of Alabama; the north sees a little more than the Gulf coast." },
@@ -42,7 +56,7 @@ export const STATE_SNOW: StateSnow[] = [
   { slug: "colorado", name: "Colorado", abbr: "CO", lowPg: 25, highPg: 150, typicalPg: 35, caseStudy: true, note: CS("The Front Range cities are moderate; the mountains are very high and strictly case-study.") },
   { slug: "connecticut", name: "Connecticut", abbr: "CT", lowPg: 25, highPg: 40, typicalPg: 30, caseStudy: false, note: "Moderate to high ground snow load, increasing inland from Long Island Sound." },
   { slug: "delaware", name: "Delaware", abbr: "DE", lowPg: 15, highPg: 25, typicalPg: 20, caseStudy: false, note: "Moderate ground snow load across the state." },
-  { slug: "district-of-columbia", name: "District of Columbia", abbr: "DC", lowPg: 20, highPg: 25, typicalPg: 25, caseStudy: false, note: "Washington, DC commonly designs to roughly 25 psf ground snow — confirm the current adopted value." },
+  { slug: "district-of-columbia", name: "District of Columbia", abbr: "DC", lowPg: 20, highPg: 25, typicalPg: 25, caseStudy: false, note: "Washington, DC commonly designs to roughly 25 psf ground snow; confirm the current adopted value." },
   { slug: "florida", name: "Florida", abbr: "FL", lowPg: 0, highPg: 0, typicalPg: 0, caseStudy: false, note: "Ground snow load is zero throughout Florida; snow is not a design case." },
   { slug: "georgia", name: "Georgia", abbr: "GA", lowPg: 0, highPg: 10, typicalPg: 5, caseStudy: false, note: "Very low except the far north Georgia mountains." },
   { slug: "hawaii", name: "Hawaii", abbr: "HI", lowPg: 0, highPg: 0, typicalPg: 0, caseStudy: false, note: "No snow design case at habitable elevations." },
@@ -53,7 +67,7 @@ export const STATE_SNOW: StateSnow[] = [
   { slug: "kansas", name: "Kansas", abbr: "KS", lowPg: 15, highPg: 25, typicalPg: 20, caseStudy: false, note: "Low to moderate, increasing to the north and west." },
   { slug: "kentucky", name: "Kentucky", abbr: "KY", lowPg: 10, highPg: 20, typicalPg: 15, caseStudy: false, note: "Low to moderate ground snow load." },
   { slug: "louisiana", name: "Louisiana", abbr: "LA", lowPg: 0, highPg: 5, typicalPg: 0, caseStudy: false, note: "Effectively no snow design case statewide." },
-  { slug: "maine", name: "Maine", abbr: "ME", lowPg: 50, highPg: 100, typicalPg: 60, caseStudy: false, note: "High to very high ground snow load — among the highest in the lower 48." },
+  { slug: "maine", name: "Maine", abbr: "ME", lowPg: 50, highPg: 100, typicalPg: 60, caseStudy: false, note: "High to very high ground snow load, among the highest in the lower 48." },
   { slug: "maryland", name: "Maryland", abbr: "MD", lowPg: 20, highPg: 35, typicalPg: 25, caseStudy: true, note: CS("The coastal plain is moderate; western Maryland's mountains are higher.") },
   { slug: "massachusetts", name: "Massachusetts", abbr: "MA", lowPg: 30, highPg: 50, typicalPg: 40, caseStudy: false, note: "High ground snow load; many towns adopt site-specific values from the state ground-snow study." },
   { slug: "michigan", name: "Michigan", abbr: "MI", lowPg: 30, highPg: 70, typicalPg: 40, caseStudy: false, note: "High, and very high in the snowbelt of the Upper Peninsula." },

@@ -7,14 +7,14 @@ export interface Crumb { name: string; href: string }
 // crumb is the current page (rendered as plain text, still listed in JSON-LD).
 export default function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
-    <nav aria-label="Breadcrumb" className="mb-4 text-sm text-slate-500">
+    <nav aria-label="Breadcrumb" className="mb-5 text-sm text-ink-400">
       {items.map((c, i) => (
         <span key={c.href}>
-          {i > 0 && <span className="mx-1.5">/</span>}
+          {i > 0 && <span className="mx-1.5 text-ink-200">/</span>}
           {i < items.length - 1 ? (
-            <Link href={c.href} className="hover:text-slate-900">{c.name}</Link>
+            <Link href={c.href} className="transition hover:text-frost-700">{c.name}</Link>
           ) : (
-            <span className="text-slate-700">{c.name}</span>
+            <span className="font-medium text-ink-600">{c.name}</span>
           )}
         </span>
       ))}

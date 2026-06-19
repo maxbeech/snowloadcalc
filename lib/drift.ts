@@ -1,4 +1,4 @@
-// Snow drift engine — ASCE/SEI 7-22 §7.7 drift loads on lower roofs at a roof
+// Snow drift engine. ASCE/SEI 7-22 §7.7 drift loads on lower roofs at a roof
 // step (and §7.8 against walls/parapets, same formula with the windward case).
 // Pure, deterministic, transparent. Targets the "snow drift calculator" queries.
 //

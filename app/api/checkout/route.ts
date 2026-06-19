@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 // Stripe Checkout for the one-time $29 Pro report. Keys are injected as Vercel
 // env vars (STRIPE_SECRET_KEY, STRIPE_PRICE_ID). When absent (e.g. before the
-// Stripe account is wired) the endpoint degrades gracefully — the Pro tier reads
+// Stripe account is wired) the endpoint degrades gracefully: the Pro tier reads
 // "coming soon" via the `message` field instead of throwing a 500.
 export async function POST() {
   const secret = process.env.STRIPE_SECRET_KEY;

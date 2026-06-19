@@ -18,10 +18,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!s) return {};
   return {
     title: `${s.name} Ground Snow Load & Roof Snow Load Calculator`,
-    description: `${s.name} ground snow load is typically ${s.lowPg}–${s.highPg} psf (${snowBand(s.typicalPg)}). Calculate the roof snow load for your ${s.name} building with the ASCE 7-22 method.`,
+    description: `${s.name} ground snow load is typically ${s.lowPg} to ${s.highPg} psf (${snowBand(s.typicalPg)}). Calculate the roof snow load for your ${s.name} building with the ASCE 7-22 method.`,
     alternates: { canonical: `/states/${s.slug}` },
   };
 }
+
+const linkCls = "rounded-lg border border-ink-100 bg-white px-3 py-1.5 text-sm text-ink-500 transition hover:border-frost-300 hover:text-ink-900";
 
 export default async function StatePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -29,59 +31,51 @@ export default async function StatePage({ params }: { params: Promise<{ slug: st
   if (!s) notFound();
 
   return (
-    <div>
+    <div className="mx-auto max-w-6xl px-5 py-10">
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "By state", href: "/states" }, { name: s.name, href: `/states/${s.slug}` }]} />
 
-      <h1 className="text-3xl font-bold tracking-tight text-slate-900">{s.name} Roof Snow Load Calculator</h1>
-      <p className="mt-2 max-w-2xl text-slate-600">
-        Ground snow load across the populated parts of {s.name} is roughly{" "}
-        <strong>{s.lowPg}–{s.highPg} psf</strong> ({snowBand(s.typicalPg)}). The calculator below is
-        pre-loaded with a typical {s.name} value of <strong>{s.typicalPg} psf</strong> — change it to
-        your site&apos;s confirmed ground snow load and adjust your roof.
+      <h1 className="font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">{s.name} Roof Snow Load Calculator</h1>
+      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+        Ground snow load across the populated parts of {s.name} runs roughly{" "}
+        <strong className="text-ink-700">{s.lowPg} to {s.highPg} psf</strong> ({snowBand(s.typicalPg)}). The
+        calculator below is pre-loaded with a typical {s.name} value of <strong className="text-ink-700">{s.typicalPg} psf</strong>.
+        Change it to your confirmed site value and adjust the roof.
       </p>
 
       {s.caseStudy ? (
-        <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-          <strong>Case-study state.</strong> {s.note}
+        <div className="mt-4 rounded-xl border border-load-300/60 bg-load-50 p-4 text-sm text-ink-700">
+          <strong className="text-load-700">Case-study state.</strong> {s.note}
         </div>
       ) : (
-        <div className="mt-3 rounded-xl border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800">{s.note}</div>
+        <div className="mt-4 rounded-xl border border-frost-200 bg-frost-50 p-4 text-sm text-ink-700">{s.note}</div>
       )}
 
-      <div className="mt-6">
-        <Calculator seed={{ pg: s.typicalPg }} />
-      </div>
+      <div className="mt-8"><Calculator seed={{ pg: s.typicalPg }} /></div>
 
-      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600">
-        <h2 className="text-lg font-bold text-slate-900">Finding your exact {s.name} ground snow load</h2>
+      <section className="mt-10 rounded-2xl border border-ink-100 bg-white p-6 text-sm leading-relaxed text-ink-600">
+        <h2 className="font-display text-lg font-bold text-ink-900">Finding your exact {s.name} ground snow load</h2>
         <p className="mt-2">
-          The number above is a planning value, not a permit value. For {s.name}, get your site&apos;s
-          design ground snow load from the <a href="https://ascehazardtool.org" target="_blank" rel="noopener noreferrer" className="text-sky-700 hover:underline">ASCE 7 Hazard Tool</a> or
-          your local building department — many {s.name} jurisdictions adopt a published county or town
-          value. {s.caseStudy && "Because elevation drives the value here, two nearby sites can differ a lot — always use the value for your exact address."}
+          The number above is a planning value, not a permit value. For {s.name}, get your site&apos;s design
+          ground snow load from the <a href="https://ascehazardtool.org" target="_blank" rel="noopener noreferrer" className="font-medium text-frost-700 hover:underline">ASCE 7 Hazard Tool</a> or
+          your local building department. Many {s.name} jurisdictions adopt a published county or town value.
+          {s.caseStudy && " Because elevation drives the value here, two nearby sites can differ a lot, so always use the value for your exact address."}
         </p>
       </section>
 
       <section className="mt-8">
-        <h2 className="text-sm font-semibold text-slate-900">Calculate by roof type</h2>
-        <div className="mt-2 flex flex-wrap gap-2">
+        <h2 className="text-sm font-semibold text-ink-700">Calculate by roof type</h2>
+        <div className="mt-3 flex flex-wrap gap-2">
           {ROOF_TYPES.map((rt) => (
-            <Link key={rt.slug} href={`/calculators/${rt.slug}`}
-              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:border-sky-300 hover:text-slate-900">
-              {rt.name}
-            </Link>
+            <Link key={rt.slug} href={`/calculators/${rt.slug}`} className={linkCls}>{rt.name}</Link>
           ))}
         </div>
       </section>
 
       <section className="mt-8">
-        <h2 className="text-sm font-semibold text-slate-900">Other states</h2>
-        <div className="mt-2 flex flex-wrap gap-2">
+        <h2 className="text-sm font-semibold text-ink-700">Other states</h2>
+        <div className="mt-3 flex flex-wrap gap-2">
           {STATE_SNOW.filter((x) => x.slug !== s.slug).slice(0, 12).map((x) => (
-            <Link key={x.slug} href={`/states/${x.slug}`}
-              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:border-sky-300 hover:text-slate-900">
-              {x.name}
-            </Link>
+            <Link key={x.slug} href={`/states/${x.slug}`} className={linkCls}>{x.name}</Link>
           ))}
         </div>
       </section>

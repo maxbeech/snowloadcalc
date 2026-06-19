@@ -1,109 +1,126 @@
 import type { Metadata } from "next";
 import { CE, CT, IS } from "@/lib/snow";
+import { Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: "Methodology — How SnowLoadCalc Computes Snow Load",
+  title: "Methodology: How SnowLoadCalc Computes Snow Load",
   description: "The exact ASCE 7-22 equations, factors and tables SnowLoadCalc uses, with every source cited. Transparent, defensible roof snow load math.",
   alternates: { canonical: "/methodology" },
 };
 
-function Cell({ children }: { children: React.ReactNode }) {
-  return <td className="border border-slate-200 px-3 py-1.5 text-center">{children}</td>;
+function Cell({ children, head }: { children: React.ReactNode; head?: boolean }) {
+  return <td className={`border border-ink-100 px-3 py-1.5 text-center ${head ? "bg-ink-50/70 font-semibold text-ink-700" : "text-ink-600"}`}>{children}</td>;
 }
+
+const EQUATIONS = [
+  ["Flat-roof load", "Pf = 0.7 · Ce · Ct · Is · Pg", "Eq. 7.3-1"],
+  ["Sloped load", "Ps = Cs · Pf", "Eq. 7.4-1"],
+  ["Minimum load", "Pm = Is · min(Pg, 20)", "§7.3.4, slope < 15°"],
+  ["Rain-on-snow", "+5 psf when 0 < Pg ≤ 20 and slope < W/50", "§7.10"],
+  ["Snow density", "γ = 0.13 · Pg + 14 ≤ 30 pcf", "Eq. 7.7-1"],
+  ["Drift height", "hd = 0.43 · L^⅓ · (Pg+10)^¼ − 1.5", "§7.7"],
+  ["Unbalanced", "gable/hip: leeward Ps + hd·γ/√S surcharge", "§7.6.1"],
+];
 
 export default function Methodology() {
   return (
-    <div className="prose-slate max-w-none">
-      <h1 className="text-3xl font-bold tracking-tight text-slate-900">Methodology</h1>
-      <p className="mt-2 max-w-2xl text-slate-600">
-        SnowLoadCalc implements the snow load procedure of <strong>ASCE/SEI 7-22, Chapter 7</strong>
-        (Minimum Design Loads and Associated Criteria for Buildings and Other Structures). Every factor
-        below is exactly the value the calculator uses — this page is the single source of truth.
+    <div className="mx-auto max-w-4xl px-5 py-12">
+      <Eyebrow>Reference</Eyebrow>
+      <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Methodology</h1>
+      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-500">
+        SnowLoadCalc implements the snow load procedure of <strong className="text-ink-700">ASCE/SEI 7-22,
+        Chapter 7</strong> (Minimum Design Loads and Associated Criteria for Buildings and Other Structures).
+        Every factor below is exactly the value the calculator uses. This page is the single source of truth.
       </p>
 
-      <section className="mt-8 space-y-3 text-sm text-slate-700">
-        <h2 className="text-lg font-bold text-slate-900">The equations</h2>
-        <div className="rounded-xl border border-slate-200 bg-white p-4 font-mono text-[13px]">
-          <div>Flat-roof load &nbsp; Pf = 0.7 · Ce · Ct · Is · Pg &nbsp;&nbsp;(Eq. 7.3-1)</div>
-          <div className="mt-1">Sloped load &nbsp;&nbsp;&nbsp; Ps = Cs · Pf &nbsp;&nbsp;(Eq. 7.4-1)</div>
-          <div className="mt-1">Minimum load &nbsp;&nbsp; Pm = Is · min(Pg, 20) &nbsp;&nbsp;(§7.3.4, slope &lt; 15°)</div>
-          <div className="mt-1">Rain-on-snow &nbsp;&nbsp; +5 psf when 0 &lt; Pg ≤ 20 and slope &lt; W/50 &nbsp;(§7.10)</div>
-          <div className="mt-1">Snow density &nbsp;&nbsp; γ = 0.13 · Pg + 14 ≤ 30 pcf &nbsp;&nbsp;(Eq. 7.7-1)</div>
-          <div className="mt-1">Drift height &nbsp;&nbsp; hd = 0.43 · L^⅓ · (Pg+10)^¼ − 1.5 &nbsp;(Eq. 7.7-1, §7.7)</div>
-          <div className="mt-1">Unbalanced &nbsp;&nbsp;&nbsp; gable/hip: leeward Ps + hd·γ/√S surcharge &nbsp;(§7.6.1)</div>
-        </div>
-      </section>
-
-      <section className="mt-8 text-sm text-slate-700">
-        <h2 className="text-lg font-bold text-slate-900">Ground snow load, Pg</h2>
-        <p className="mt-2">
-          Pg is a site-specific input set by the ASCE 7 Hazard Tool or your local building department —
-          SnowLoadCalc never assumes it. Our per-state pages provide a planning range read from the ASCE 7
-          ground snow load map; the value adopted by your jurisdiction governs a permit.
-        </p>
-      </section>
-
-      <section className="mt-8 text-sm text-slate-700">
-        <h2 className="text-lg font-bold text-slate-900">Exposure factor Ce — Table 7.3-1</h2>
-        <table className="mt-2 w-full border-collapse text-xs">
-          <thead><tr className="bg-slate-50"><Cell>Terrain</Cell><Cell>Fully exposed</Cell><Cell>Partially exposed</Cell><Cell>Sheltered</Cell></tr></thead>
-          <tbody>
-            {(["B", "C", "D", "aboveTreeline"] as const).map((t) => (
-              <tr key={t}>
-                <Cell>{t === "aboveTreeline" ? "Above treeline" : t}</Cell>
-                <Cell>{CE[t].fully}</Cell><Cell>{CE[t].partial}</Cell><Cell>{CE[t].sheltered}</Cell>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-
-      <section className="mt-8 grid gap-6 text-sm text-slate-700 sm:grid-cols-2">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900">Thermal factor Ct — Table 7.3-2</h2>
-          <table className="mt-2 w-full border-collapse text-xs">
-            <tbody>
-              <tr><Cell>Heated building</Cell><Cell>{CT.heated}</Cell></tr>
-              <tr><Cell>Just above freezing / cold ventilated</Cell><Cell>{CT.slightlyHeated}</Cell></tr>
-              <tr><Cell>Unheated / open</Cell><Cell>{CT.unheated}</Cell></tr>
-              <tr><Cell>Freezer</Cell><Cell>{CT.freezer}</Cell></tr>
-              <tr><Cell>Heated greenhouse</Cell><Cell>{CT.greenhouse}</Cell></tr>
-            </tbody>
-          </table>
-        </div>
-        <div>
-          <h2 className="text-lg font-bold text-slate-900">Importance factor Is — Table 1.5-2</h2>
-          <table className="mt-2 w-full border-collapse text-xs">
-            <tbody>
-              {(["I", "II", "III", "IV"] as const).map((k) => (
-                <tr key={k}><Cell>Risk Category {k}</Cell><Cell>{IS[k]}</Cell></tr>
+      <section className="mt-9">
+        <h2 className="font-display text-lg font-bold text-ink-900">The equations</h2>
+        <div className="mt-3 overflow-hidden rounded-2xl border border-ink-100 bg-white">
+          <table className="w-full text-sm">
+            <tbody className="divide-y divide-ink-50">
+              {EQUATIONS.map(([name, eq, ref]) => (
+                <tr key={name}>
+                  <td className="px-4 py-2.5 font-medium text-ink-600">{name}</td>
+                  <td className="px-4 py-2.5 font-mono text-[13px] text-ink-900">{eq}</td>
+                  <td className="px-4 py-2.5 text-right font-mono text-[11px] text-frost-600">{ref}</td>
+                </tr>
               ))}
             </tbody>
           </table>
         </div>
       </section>
 
-      <section className="mt-8 text-sm text-slate-700">
-        <h2 className="text-lg font-bold text-slate-900">Slope factor Cs — §7.4 / Fig. 7.4-1</h2>
+      <section className="mt-9 text-sm leading-relaxed text-ink-600">
+        <h2 className="font-display text-lg font-bold text-ink-900">Ground snow load, Pg</h2>
+        <p className="mt-2">
+          Pg is a site-specific input, set by the ASCE 7 Hazard Tool or your local building department.
+          SnowLoadCalc never assumes it. The per-state pages provide a planning range read from the ASCE 7
+          ground snow load map; the value adopted by your jurisdiction governs a permit.
+        </p>
+      </section>
+
+      <section className="mt-9 text-sm text-ink-600">
+        <h2 className="font-display text-lg font-bold text-ink-900">Exposure factor Ce, Table 7.3-1</h2>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full border-collapse text-xs">
+            <thead><tr><Cell head>Terrain</Cell><Cell head>Fully exposed</Cell><Cell head>Partially exposed</Cell><Cell head>Sheltered</Cell></tr></thead>
+            <tbody>
+              {(["B", "C", "D", "aboveTreeline"] as const).map((t) => (
+                <tr key={t}>
+                  <Cell head>{t === "aboveTreeline" ? "Above treeline" : t}</Cell>
+                  <Cell>{CE[t].fully}</Cell><Cell>{CE[t].partial}</Cell><Cell>{CE[t].sheltered}</Cell>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="mt-9 grid gap-7 text-sm text-ink-600 sm:grid-cols-2">
+        <div>
+          <h2 className="font-display text-lg font-bold text-ink-900">Thermal factor Ct, Table 7.3-2</h2>
+          <table className="mt-3 w-full border-collapse text-xs">
+            <tbody>
+              <tr><Cell head>Heated building</Cell><Cell>{CT.heated}</Cell></tr>
+              <tr><Cell head>Just above freezing or cold ventilated</Cell><Cell>{CT.slightlyHeated}</Cell></tr>
+              <tr><Cell head>Unheated or open</Cell><Cell>{CT.unheated}</Cell></tr>
+              <tr><Cell head>Freezer</Cell><Cell>{CT.freezer}</Cell></tr>
+              <tr><Cell head>Heated greenhouse</Cell><Cell>{CT.greenhouse}</Cell></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h2 className="font-display text-lg font-bold text-ink-900">Importance factor Is, Table 1.5-2</h2>
+          <table className="mt-3 w-full border-collapse text-xs">
+            <tbody>
+              {(["I", "II", "III", "IV"] as const).map((k) => (
+                <tr key={k}><Cell head>Risk Category {k}</Cell><Cell>{IS[k]}</Cell></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="mt-9 text-sm leading-relaxed text-ink-600">
+        <h2 className="font-display text-lg font-bold text-ink-900">Slope factor Cs, §7.4 and Fig. 7.4-1</h2>
         <p className="mt-2">
           Cs is 1.0 up to a breakpoint slope, then falls linearly to 0 at 70°. The breakpoint depends on
-          whether the roof is warm (Ct ≤ 1.0), cold ventilated (Ct = 1.1) or cold (Ct ≥ 1.2), and whether
+          whether the roof is warm (Ct ≤ 1.0), cold ventilated (Ct = 1.1) or cold (Ct ≥ 1.2), and on whether
           the surface is slippery: warm slippery 5°, warm other 30°; cold-ventilated slippery 10°, other
           37.5°; cold slippery 15°, other 45°.
         </p>
       </section>
 
-      <section className="mt-8 text-sm text-slate-700">
-        <h2 className="text-lg font-bold text-slate-900">What this tool covers — and what it doesn&apos;t</h2>
+      <section className="mt-9 rounded-2xl border border-load-300/60 bg-load-50 p-5 text-sm leading-relaxed text-ink-600">
+        <h2 className="font-display text-lg font-bold text-ink-900">What this tool covers, and what it does not</h2>
         <p className="mt-2">
-          SnowLoadCalc computes the <strong>balanced</strong> roof snow load, the §7.3.4 minimum and the
-          §7.10 rain-on-snow case; the <strong>§7.6.1 unbalanced</strong> case for hip and gable roofs;
-          and, on the drift page, the <strong>§7.7 drift</strong> surcharge at roof steps. It does
-          <strong> not</strong> yet resolve <strong>sliding-snow</strong> (§7.9), <strong>partial</strong>
-          loading (§7.5), the <strong>monoslope/sawtooth unbalanced</strong> cases (§7.6.2–7.6.3), or
-          curved roofs — these can govern on specific geometries and must be checked by a qualified
-          engineer for a permit submittal. Always confirm the governing ground snow load and have the
-          design reviewed by a licensed professional.
+          SnowLoadCalc computes the <strong className="text-ink-800">balanced</strong> roof snow load, the
+          §7.3.4 minimum and the §7.10 rain-on-snow case; the <strong className="text-ink-800">§7.6.1
+          unbalanced</strong> case for hip and gable roofs; and, on the drift page, the <strong className="text-ink-800">§7.7
+          drift</strong> surcharge at roof steps. It does not yet resolve sliding snow (§7.9), partial loading
+          (§7.5), the monoslope and sawtooth unbalanced cases (§7.6.2 and §7.6.3), or curved roofs. Those can
+          govern on specific geometries and must be checked by a qualified engineer for a permit submittal.
+          Always confirm the governing ground snow load and have the design reviewed by a licensed professional.
         </p>
       </section>
     </div>
